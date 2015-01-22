@@ -1,0 +1,1008 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>JSLint, The JavaScript Code Quality Tool</title>
+<link rel="icon" type="image/gif" href="images/favicon.gif">
+<style>
+.dt_keymap
+{
+	font-family: Arial !important;
+	font-weight: bold;
+	font-size: 100%;
+	background: #fde4d0;
+}
+.dd_keymap
+{
+	font-family: Arial !important;
+	font-size: 90%;
+	background: #FFFFFF;
+}
+body {
+    background-color: #EFEADF;
+    margin: 0;
+    padding: 0;
+}
+div#JSLINT_ fieldset {
+    background-color: #E3D8CB;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.35),
+          inset 0 0 10px rgba(169, 84, 84, 0.75);
+    clear: both;
+    margin: 1.5%;
+    padding: 0;
+    width: 97%;
+}
+div#JSLINT_ fieldset h1 {
+    background-color: slategray;
+    color: white;
+    font-family: sans-serif;
+    font-size: 100%;
+    font-style: normal;
+    margin: 0pt;
+    padding: 0.35em;
+    text-align: center;
+}
+div#JSLINT_ button {
+    background-color: lightsteelblue;
+    color: black;
+    cursor: pointer;
+    font-family: sans-serif;
+    font-size: 100%;
+    font-style: normal;
+    margin: 0pt;
+    padding: 0.35em;
+    text-align: center;
+}
+div#JSLINT_ button:hover {
+    background-color: cornflowerblue;
+}
+
+div#JSLINT_ button:active {
+    color: white;
+}
+button#JSLINT_BUTTON {
+    border-radius: 16pt;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.35);
+    width: 50%;
+}
+
+div#JSLINT_ fieldset>button {
+    float: right;
+    border: 0;
+    border-left: 1pt solid gray;
+    padding-left: 2em;
+    padding-right: 2em;
+}
+
+div#JSLINT_ address {
+    color: dimgray;
+    display: block;
+    float: right;
+    font-family: serif;
+    font-size: 90%;
+    margin-left: 1em;
+}
+div#JSLINT_ dl {
+    background-color: #F3E8DB;
+    font-family: monospace;
+    margin-left: 1em;
+    margin-right: 1em;
+    margin-bottom: 0;
+    padding-left: 0;
+    padding-right: 1em;
+}
+div#JSLINT_ dt {
+    display: block;
+    font-family: serif;
+    font-size: 80%;
+    font-style: italic;
+    margin-left: 2em;
+}
+div#JSLINT_ dd {
+    display: block;
+    font-family: monospace;
+    margin-left: 4em;
+    overflow-x: hidden;
+}
+div#JSLINT_ textarea {
+    background-color: white;
+    border: solid 1px #E7DECC;
+    clear: both;
+    font-family: monospace;
+    margin: 2%;
+    width: 95%;
+    padding-left: 0.5em;
+}
+div#JSLINT_ textarea[readonly] {
+    background-color: #F3E8DB;
+}
+div#JSLINT_ label {
+    font-family: sans-serif;
+    font-size: 90%;
+    padding-left: 0.25em;
+}
+div#JSLINT_ fieldset#JSLINT_ERRORS>h1 {
+    background-color: indianred;
+}
+div#JSLINT_ fieldset#JSLINT_ERRORS>div {
+    padding-bottom: 1em;
+    padding-top: 1em;
+}
+div#JSLINT_ fieldset#JSLINT_ERRORS cite {
+    background-color: #F3E8DB;
+    display: block;
+    font-family: serif;
+    font-style: normal;
+    margin-left: 1em;
+    margin-right: 1em;
+    overflow-x: hidden;
+    padding-left: 1em;
+    padding-right: 1em;
+}
+div#JSLINT_ fieldset#JSLINT_ERRORS pre {
+    margin-left: 1em;
+    overflow: hidden;
+}
+div#JSLINT_ fieldset#JSLINT_ERRORS dl address {
+    display: inline;
+    float: none;
+    font-size: 80%;
+    margin: 0;
+}
+div#JSLINT_ fieldset#JSLINT_REPORT>div {
+    padding-bottom: 1em;
+}
+
+div#JSLINT_ fieldset#JSLINT_OPTIONS>div {
+    float: left;
+    padding: 1em;
+}
+
+div#JSLINT_ fieldset#JSLINT_OPTIONS input[type="text"] {
+    padding-right: 0.5em;
+    text-align: right;
+    width: 4em;
+}
+
+div#JSLINT_ fieldset#EDITOR_OPTIONS>div {
+    float: left;
+    padding: 1em;
+}
+
+div#JSLINT_ dl.level0 {
+    background-color: white;
+    padding-left: 0;
+}
+
+div#JSLINT_ dl.level1 {
+    background-color: #ffff80;  /* yellow */
+    padding-left: 2em;
+}
+
+div#JSLINT_ dl.level2 {
+    background-color: #cdfacd;  /* green */
+    padding-left: 4em;
+}
+
+div#JSLINT_ dl.level3 {
+    background-color: #d8d8ff;  /* blue */
+    padding-left: 6em;
+}
+
+div#JSLINT_ dl.level4 {
+    background-color: #e7c7ff;  /* purple */
+    padding-left: 8em;
+}
+
+div#JSLINT_ dl.level5 {
+    background-color: #ffcdcd;  /* red */
+    padding-left: 10em;
+}
+
+div#JSLINT_ dl.level6 {
+    background-color: #ffe390;  /* orange */
+    padding-left: 12em;
+}
+
+div#JSLINT_ dl.level7 {
+    background-color: #cdcdcd;  /* gray */
+    padding-left: 14em;
+}
+
+div#JSLINT_ dl.level8 {
+    padding-left: 16em;
+}
+
+.tristate {
+    font-family: sans-serif;
+    font-size: 75%;
+}
+.tristate [title] {
+    height: 2em;
+    line-height: 2em;
+    padding: 0.25em;
+}
+.tristate button, .tristate var {
+    cursor: pointer;
+    display: inline-block;
+    height: 2em;
+    vertical-align: middle;
+}
+.tristate button {
+    border-color: #B7C3D0 #547598 #547598 #B7C3D0;
+    border-radius: 5px 0px 0px 5px;
+    border-style: solid;
+    border-width: 1px;
+    box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.37);
+    width: 2em;
+}
+.tristate var {
+    background-color: transparent;
+    border: 1pt solid silver;
+    border-radius: 0 3px 3px 0;
+    color: gray;
+    font-family: serif;
+    padding-left: 0.5em;
+    width: 3.5em;
+}
+.tristate var.true {
+    background-color: white;
+    border-color: #9D968C #C5BFB3 #C5BFB3 #6F6A61;
+    box-shadow: inset 1px 1px 5px rgba(0, 0, 0, 0.2);
+    color: black;
+}
+.tristate var.false {
+    background-color: silver;
+    border-color: #9D968C #C5BFB3 #C5BFB3 #6F6A61;
+    box-shadow: inset 1px 1px 5px rgba(0, 0, 0, 0.2);
+    color: black;
+}
+</style>
+
+<!-- Import CodeMirror code editor libraries -->
+	<script src='./js/codemirror/lib/codemirror.js'></script>
+	<link rel="stylesheet" href="./js/codemirror/lib/codemirror.css">
+	<script src="./js/codemirror/mode/javascript/javascript.js"></script>
+	<style type="text/css">
+		.CodeMirror { border: 1px solid black; } /* o.w. default editor has no borders at all! */
+		.cm-trailingspace { /* for trailingspace add-on */
+			background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAQAAAACCAYAAAB/qH1jAAAABmJLR0QA/wD/AP+gvaeTAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAB3RJTUUH3QUXCToH00Y1UgAAACFJREFUCNdjPMDBUc/AwNDAAAFMTAwMDA0OP34wQgX/AQBYgwYEx4f9lQAAAABJRU5ErkJggg==);
+			background-position: bottom left;
+			background-repeat: repeat-x;
+		}
+		.CodeMirror-foldmarker { /* for foldcode add-on */
+			color: blue;
+			text-shadow: #b9f 1px 1px 2px, #b9f -1px -1px 2px, #b9f 1px -1px 2px, #b9f -1px 1px 2px;
+			font-family: arial;
+			line-height: .3;
+			cursor: pointer;
+		}
+		.CodeMirror-activeline-background {background: #e8f2ff !important;} /* for active-line add-on */
+		.CodeMirror-focused .cm-matchhighlight { /* for matchhighlight add-on */
+			background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAIAAAACCAYAAABytg0kAAAAFklEQVQI12NgYGBgkKzc8x9CMDAwAAAmhwSbidEoSQAAAABJRU5ErkJggg==);
+			/*background-image: url(data:image/png;base64,000);*/
+			background-position: bottom;
+			background-repeat: repeat-x;
+			/* Add shadow to make text stand out!
+			text-shadow: #ccc 1px 1px 2px, #ccc -1px -1px 2px, #ccc 1px -1px 2px, #ccc -1px 1px 2px;
+			*/
+		}
+		.CodeMirror-focused .cm-matchhighlight-bglight { /* for themes with light coloured backgrounds */
+			background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAIAAAACCAYAAABytg0kAAAAFklEQVQI12NgYGBgkKzc8x9CMDAwAAAmhwSbidEoSQAAAABJRU5ErkJggg==);
+		}
+		.CodeMirror-focused .cm-matchhighlight-bgdark { /* for themes with dark coloured backgrounds */
+			background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAIAAAACCAYAAABytg0kAAAABmJLR0QA/wD/AP+gvaeTAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAB3RJTUUH3QYKBxwGiNJeeAAAABZJREFUCNdjYGBgYPj///9/CMHAwAAAR8oH+eQvAIgAAAAASUVORK5CYII=);
+		}
+		/* for placeholder add-on */
+		.CodeMirror-empty { outline: 1px solid #c22; }
+		.CodeMirror-empty.CodeMirror-focused { outline: none; }
+		.CodeMirror pre.CodeMirror-placeholder { color: #999; }
+		/* for matchingbrackets add-on; override default faint, bright green highlight to a darker green, bold style */
+		div.CodeMirror span.CodeMirror-matchingbracket {
+			color: #0a0;
+			font-weight: bold;
+		}
+		/* Added to make tabs visible */
+		.cm-tab {
+			 background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAMCAYAAAAkuj5RAAAABmJLR0QA/wD/AP+gvaeTAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAB3RJTUUH3QYKCQA12+tPOQAAANpJREFUSMftlUFqAkEQRd+oKDmAYYK7LAJuQshBss4dBE8g5AZZe5JshRwkG2EQRknWUee5sBedIZBRItLgh6a6qotP/U83DRecHuqD+pyygDd1rb5HtS91mYqAdhi4VAt17B5VVmvsH0qeZVmpPjZonTfoua/ln9F+ALwCN0AXqIBeRx0BEyA/0h2A8pejbYg9YA1cN6Bb1PJ2xAPQAq5C9Ifzx7j/h7B+WHdq/g88uTpVv9UqXCFTeQMt9Uldhbk/1E1KAm4j1wt1mJqAIgz/EtVm6uzyS54bO1k6weq5GZG/AAAAAElFTkSuQmCC);
+			 background-position: right;
+			 background-repeat: no-repeat;
+		}
+		.cm-tab-bglight { /* visible tab image for themes with light coloured background */
+			 background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAMCAYAAAAkuj5RAAAAAXNSR0IArs4c6QAAAGFJREFUSMft1LsRQFAQheHPowAKoACx3IgEKtaEHujDjORSgWTH/ZOdnZOcM/sgk/kFFWY0qV8foQwS4MKBCS3qR6ixBJvElOobYAtivseIE120FaowJPN75GMu8j/LfMwNjh4HUpwg4LUAAAAASUVORK5CYII=);
+			 background-position: right;
+			 background-repeat: no-repeat;
+		}
+		.cm-tab-bgdark { /* visible tab image for themes with dark coloured background */
+			 background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAMCAYAAAAkuj5RAAAABmJLR0QA/wD/AP+gvaeTAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAB3RJTUUH3QYKCQA12+tPOQAAANpJREFUSMftlUFqAkEQRd+oKDmAYYK7LAJuQshBss4dBE8g5AZZe5JshRwkG2EQRknWUee5sBedIZBRItLgh6a6qotP/U83DRecHuqD+pyygDd1rb5HtS91mYqAdhi4VAt17B5VVmvsH0qeZVmpPjZonTfoua/ln9F+ALwCN0AXqIBeRx0BEyA/0h2A8pejbYg9YA1cN6Bb1PJ2xAPQAq5C9Ifzx7j/h7B+WHdq/g88uTpVv9UqXCFTeQMt9Uldhbk/1E1KAm4j1wt1mJqAIgz/EtVm6uzyS54bO1k6weq5GZG/AAAAAElFTkSuQmCC);
+			 background-position: right;
+			 background-repeat: no-repeat;
+		}
+		/* for fullscreen editing */
+		.CodeMirror-fullscreen {
+			display: block;
+			position: absolute;
+			top: 0; left: 0;
+			width: 100%;
+			z-index: 99; /*shouldn't be more than lint issue popup's z-index of 100 !*/
+		}
+		/* for bookmarking */
+		.bookmarks { width: .8em; }
+		.bookmark { color: rgba(255, 255, 10, 125); font-weight: 900; }
+	</style>
+
+	<!-- Import  add-on: search -->
+	<script src="./js/codemirror/addon/dialog/dialog.js"></script>
+	<link rel="stylesheet" href="./js/codemirror/addon/dialog/dialog.css">
+	<script src="./js/codemirror/addon/search/searchcursor.js"></script>
+	<script src="./js/codemirror/addon/search/search.js"></script>
+	<link rel="stylesheet" href="./js/codemirror/doc/docs.css">
+
+	<!-- Import add-on: bracket matching; Also need to enable flag: matchBrackets -->
+	<script src="./js/codemirror/addon/edit/matchbrackets.js"></script>
+
+	<!-- Import add-on: auto-close brackets; flag: autoCloseBrackets -->
+	<script src="./js/codemirror/addon/edit/closebrackets.js"></script>
+
+	<!-- Import add-on: show trailing spaces; flag: showTrailingSpace -->
+	<script src="./js/codemirror/addon/edit/trailingspace.js"></script>
+
+	<!-- Import add-on: toggle comment blocks; requires key mapping to pass in flag 'commentBlankLines' -->
+	<script src="./js/codemirror/addon/comment/comment.js"></script>
+
+	<!-- Import add-on: comment continuation; requires key mapping -->
+	<script src="./js/codemirror/addon/comment/continuecomment.js"></script>
+
+	<!-- Import add-on: collapse/expand code blocks; requires some setup codes (incl. key mapping) -->
+    <script src="./js/codemirror/addon/fold/foldcode.js"></script>
+    <script src="./js/codemirror/addon/fold/foldgutter.js"></script>
+	<link rel="stylesheet" href="./js/codemirror/addon/fold/foldgutter.css">
+    <script src="./js/codemirror/addon/fold/brace-fold.js"></script>
+    <script src="./js/codemirror/addon/fold/comment-fold.js"></script>
+
+	<!-- Import add-on: show available variable hints; requires key mapping -->
+	<script src="./js/codemirror/addon/hint/show-hint.js"></script>
+    <link rel="stylesheet" href="./js/codemirror/addon/hint/show-hint.css">
+    <script src="./js/codemirror/addon/hint/javascript-hint.js"></script>
+
+	<!-- Import add-on: static code analysis; requires extra options: gutters, lintWith -->
+	<script src="./js/jshint.js"></script>
+	<script src="./js/jslint.js"></script>
+    <link rel="stylesheet" href="./js/codemirror/addon/lint/lint.css">
+    <script src="./js/codemirror/addon/lint/lint.js"></script>
+    <script src="./js/codemirror/addon/lint/javascript-lint.js"></script>
+    <!--
+    <script src="/js/jsonlint.js"></script>
+    <script src="./js/codemirror/addon/lint/json-lint.js"></script>
+    -->
+
+	<!-- Import add-on: highlight all instances of selected text (incl. partial word!); flag: highlightSelectionMatches -->
+	<script src="./js/codemirror/addon/search/match-highlighter.js"></script>
+
+	<!-- Import add-on: highlight entire row where cursor is at to make it easily visible; flag: styleActiveLine -->
+    <script src="./js/codemirror/addon/selection/active-line.js"></script>
+
+	<!-- Import add-on: displays hint in empty editor -->
+    <script src="./js/codemirror/addon/display/placeholder.js"></script>
+
+	<!-- Import add-on: for bookmarking; requires key mappings -->
+    <script src="./js/codemirror/addon/edit/bookmark.js"></script>
+
+	<!-- Import preferred theme(s); flag: theme -->
+    <link rel="stylesheet" href="./js/codemirror/theme/3024-day.css">
+    <link rel="stylesheet" href="./js/codemirror/theme/3024-night.css">
+    <link rel="stylesheet" href="./js/codemirror/theme/ambiance.css">
+    <link rel="stylesheet" href="./js/codemirror/theme/ambiance-mobile.css">
+    <link rel="stylesheet" href="./js/codemirror/theme/base16-dark.css">
+    <link rel="stylesheet" href="./js/codemirror/theme/base16-light.css">
+    <link rel="stylesheet" href="./js/codemirror/theme/blackboard.css">
+    <link rel="stylesheet" href="./js/codemirror/theme/cobalt.css">
+    <link rel="stylesheet" href="./js/codemirror/theme/eclipse.css">
+    <link rel="stylesheet" href="./js/codemirror/theme/elegant.css">
+    <link rel="stylesheet" href="./js/codemirror/theme/erlang-dark.css">
+    <link rel="stylesheet" href="./js/codemirror/theme/lesser-dark.css">
+    <link rel="stylesheet" href="./js/codemirror/theme/mbo.css">
+    <link rel="stylesheet" href="./js/codemirror/theme/mdn-like.css">
+    <link rel="stylesheet" href="./js/codemirror/theme/midnight.css">
+    <link rel="stylesheet" href="./js/codemirror/theme/monokai.css">
+    <link rel="stylesheet" href="./js/codemirror/theme/neat.css">
+    <link rel="stylesheet" href="./js/codemirror/theme/neo.css">
+    <link rel="stylesheet" href="./js/codemirror/theme/night.css">
+    <link rel="stylesheet" href="./js/codemirror/theme/paraiso-dark.css">
+    <link rel="stylesheet" href="./js/codemirror/theme/paraiso-light.css">
+    <link rel="stylesheet" href="./js/codemirror/theme/pastel-on-dark.css">
+    <link rel="stylesheet" href="./js/codemirror/theme/rubyblue.css">
+    <link rel="stylesheet" href="./js/codemirror/theme/solarized.css">
+    <link rel="stylesheet" href="./js/codemirror/theme/the-matrix.css">
+    <link rel="stylesheet" href="./js/codemirror/theme/tomorrow-night-bright.css">
+    <link rel="stylesheet" href="./js/codemirror/theme/tomorrow-night-eighties.css">
+    <link rel="stylesheet" href="./js/codemirror/theme/twilight.css">
+    <link rel="stylesheet" href="./js/codemirror/theme/vibrant-ink.css">
+    <link rel="stylesheet" href="./js/codemirror/theme/xq-dark.css">
+    <link rel="stylesheet" href="./js/codemirror/theme/xq-light.css">
+    <link rel="stylesheet" href="./js/codemirror/theme/zenburn.css">
+
+	<!-- for computing appropriate colours to match theme -->
+    <script src="./js/jquery.js"></script>
+    <script src="./js/jquery.xcolor.min.js"></script>
+<!-- End Import CodeMirror code editor libraries -->
+
+<script>
+/*jslint browser:true, indent:4, white:true, sloppy:true*/
+/*global $:true, CodeMirror:true*/
+
+var PREFERRED_THEME = 'blackboard', isDarkTheme = true;
+var cm, init_ui;
+
+/**
+ * Change a property of a specified rule in the stylesheets (include html inline styles).
+ * @param ruleName (string) the rule whose property is to be changed.
+ * @param propName (string) name of property to be changed.
+ * @param newProVal new value to change to.
+ * @param newPriority new priority to change to, e.g. 'important'.
+ * @return (boolean) true if change made successfully; false o.w.
+ **/
+function changeStyleSheetProperty(ruleName, propName, newProVal, newPriority)
+{
+	return !([].every.call( document.styleSheets, function ( sheet ) {
+		if (sheet.cssRules)
+		{
+			return [].every.call( sheet.cssRules, function ( rule ) {
+				if ( rule.selectorText === ruleName) {
+					rule.style.setProperty(propName, newProVal,  newPriority);
+					return false; //terminates iterations
+				}
+				return true;
+			});
+		}
+		return true;
+	}));
+}
+
+/**
+ * Retrieve a property of a specified rule in the stylesheets (include html inline styles).
+ * Note: this does not seem to work well in some environments (cssRules undefined, class name sensitivity).
+ *
+ * @param ruleName (string) the rule whose property is to be changed.
+ * @param propName (string) name of property to be changed.
+ * @return the property value if rule is found; undefined o.w.
+ **/
+function getStyleSheetProperty(ruleName, propName)
+{
+	var val;
+	[].every.call( document.styleSheets, function ( sheet ) {
+		if (sheet.cssRules)
+		{
+			return [].every.call( sheet.cssRules, function ( rule ) {
+				if ( rule.selectorText === ruleName) {
+					val = rule.style[propName];
+					return false; //terminates iterations
+				}
+				return true;
+			});
+		}
+		return true;
+	});
+	return val;
+}
+
+function toggleCMTabs()
+{
+	var tabs = $('#cbShowTabs').prop('checked');
+	if (tabs)
+	{
+		changeStyleSheetProperty('.cm-tab', 'background',
+			getStyleSheetProperty(isDarkTheme? '.cm-tab-bgdark': '.cm-tab-bglight', 'background'));
+	}
+	else
+	{
+		changeStyleSheetProperty('.cm-tab', 'background', 'none');
+	}
+}
+
+/**
+ * Attempt to find colours matching the theme in use
+ * for the custom styles added by addons.
+ * Note: not all themes supported, as their CSS rule name varies greatly!
+ * If unable to retrieve a reference colour from the theme,
+ * will remain with last used colour.
+ *
+ * Support for addon:
+ *   - activeline, foldmarker, matchingbracket: yes
+ *   - trailingspace, tab: no, owing to use of embedded image string
+ **/
+function normalizeColours() {
+	var $p, themeSelectedColor, newColor, themeBgColor;
+
+	$p = $("<div class='CodeMirror cm-s-" + PREFERRED_THEME.toLowerCase()
+		+ "'><p class='CodeMirror-selected'></p></div>").hide().appendTo('body');
+	themeSelectedColor = $p.children(0).css('background-color');
+	$p.remove();
+
+	//activeline
+	if (themeSelectedColor)
+	{
+		newColor = $.xcolor.lighten(themeSelectedColor);
+		//Note: getCSS() returns colour as rgba() string; whereas getHex() only returns the RGB components.
+		changeStyleSheetProperty('.CodeMirror-activeline-background', 'background',
+			newColor.getCSS(),  'important');
+	}
+
+	$p = $("<div class='CodeMirror cm-s-" + PREFERRED_THEME.toLowerCase()
+		+ "'><p class='cm-matchingbracket'></p></div>").hide().appendTo('body');
+	themeBgColor = $p.css('background-color');
+	$p.remove();
+	if (themeBgColor)
+	{
+		if ($.xcolor.readable('#000000', themeBgColor))
+		{
+			isDarkTheme = false;
+			changeStyleSheetProperty('.CodeMirror-focused .cm-matchhighlight', 'background-image',
+				getStyleSheetProperty('.CodeMirror-focused .cm-matchhighlight-bglight', 'background-image'));
+			changeStyleSheetProperty('.CodeMirror-foldmarker', 'color', 'blue');
+			changeStyleSheetProperty('.CodeMirror pre.CodeMirror-placeholder', 'color', '#999');
+			changeStyleSheetProperty('.bookmark', 'color', 'rgba(10, 10, 255, 125)');
+		}
+		else
+		{
+			isDarkTheme = true;
+			changeStyleSheetProperty('.CodeMirror-focused .cm-matchhighlight', 'background-image',
+				getStyleSheetProperty('.CodeMirror-focused .cm-matchhighlight-bgdark', 'background-image'));
+			changeStyleSheetProperty('.CodeMirror-foldmarker', 'color', 'white');
+			changeStyleSheetProperty('.CodeMirror pre.CodeMirror-placeholder', 'color', '#fff');
+			changeStyleSheetProperty('.bookmark', 'color', 'rgba(255, 255, 10, 125)');
+		}
+	}
+	toggleCMTabs();
+}
+
+//Add fullscreen editing capability
+function isFullScreen(cm) {
+	return (/\bCodeMirror-fullscreen\b/).test(cm.getWrapperElement().className);
+}
+function winHeight() {
+	return window.innerHeight || (document.documentElement || document.body).clientHeight;
+}
+function setFullScreen(cm, full) {
+	var wrap = cm.getWrapperElement();
+	if (full) {
+		wrap.className += " CodeMirror-fullscreen";
+		wrap.style.height = winHeight() + "px";
+		document.documentElement.style.overflow = "hidden";
+		window.scrollTo(0, 0); //SD: this is needed, o.w. if page has been scrolled, top of editor will appear off screen!
+	} else {
+		wrap.className = wrap.className.replace(" CodeMirror-fullscreen", "");
+		wrap.style.height = "";
+		document.documentElement.style.overflow = "";
+	}
+	cm.refresh();
+}
+CodeMirror.on(window, "resize", function() {
+	var showing = document.body.getElementsByClassName("CodeMirror-fullscreen")[0];
+	if (!showing)
+    {
+        return;
+    }
+	showing.CodeMirror.getWrapperElement().style.height = winHeight() + "px";
+});
+
+/**
+ * For JSLint issues' hyperlinks to jump to the line of code,
+ * switch focus to code editor, bringing it into view with
+ * cursor positioned at the given line (and column) of code.
+ *
+ * @param row line of code to jump to (base 1)
+ * @param col column of code to jump to (base 1)
+ **/
+function scrollToCode(row, col)
+{
+	//scroll up & down 5 rows to show context around JSLint issue
+	cm.scrollIntoView({line: (row >= 5)? (row - 5): row, ch: 0});
+	cm.scrollIntoView({line: row + 5, ch: 0});
+	cm.doc.setCursor((row >= 1)? row - 1: 0, (col >= 1)? col - 1: 0); //actual position of JSLint issue
+	window.scrollTo(0, 0);
+	cm.focus();
+}
+
+function toggleCMLint()
+{
+	var lint = $('#cbEnableCMLint').prop('checked'),
+		inl = $('#cbShowInline').prop('checked');
+	if (!lint)
+	{
+		cm.setOption('lintWith', false);
+	}
+	else
+	{
+		if (inl)
+		{
+			cm.setOption('lintWith', {getAnnotations:CodeMirror.javascriptValidator, showInline:true});
+		}
+		else
+		{
+			cm.setOption('lintWith', {getAnnotations:CodeMirror.javascriptValidator});
+		}
+	}
+}
+
+function convertTab2Space(cm)
+{
+	//SD: JSLint does not like this 'unsafe construct', so work around it!
+	//var spaces = Array(cm.getOption("indentUnit") + 1).join(" ");
+	var spaces = [];
+    spaces.length = cm.getOption("indentUnit") + 1;
+    spaces = spaces.join(" ");
+	cm.replaceSelection(spaces, "end", "+input");
+}
+
+function toggleUseSpaceNotTab()
+{
+	var useSpace = $('#cbUseSpaceNotTab').prop('checked');
+	cm.setOption('indentWithTabs', !useSpace);
+	cm.removeKeyMap('UseSpaceNotTab');
+	if (useSpace)
+	{
+		cm.addKeyMap({
+			name: 'UseSpaceNotTab',
+			'Tab': convertTab2Space
+		});
+	}
+}
+
+function updateCommentBlankLines()
+{
+	cm.removeKeyMap('CommentBlankLines');
+	cm.addKeyMap({
+		name: 'CommentBlankLines',
+		'Shift-Ctrl-C': function(cm)
+		{
+			CodeMirror.commands.toggleComment(cm, {
+				commentBlankLines: !!($('#cbCommentBlankLines').prop('checked')),
+				blockCommentStart: "\/*",
+				blockCommentEnd: "*\/",
+				blockCommentContinue: " * ",
+				lineComment: "//"
+			});
+		}
+	}, true);
+}
+
+function selectTheme() {
+	if (!cm)
+    {
+        return;
+    }
+	var input = document.getElementById("selTheme");
+	PREFERRED_THEME = input.options[input.selectedIndex].innerHTML;
+	cm.setOption("theme", PREFERRED_THEME);
+	normalizeColours();
+}
+
+function load() //this can't recv svr msg!
+{
+	normalizeColours();
+
+	//prepare CodeMirror editor
+	cm = CodeMirror.fromTextArea(document.getElementById('txtCode'), {
+		mode: "javascript",
+		lineNumbers: true,
+		matchBrackets: true,
+		autoCloseBrackets: true,
+		showTrailingSpace: true,
+		commentBlankLines: true, //does not work/unknown purpose?
+		continueComments: true,
+		highlightSelectionMatches: {minChars:1},
+		styleActiveLine: true,
+		indentWithTabs: false, //however, it does not convert new tabs to spaces
+		tabSize: 4,
+		indentUnit: 4,
+		theme: PREFERRED_THEME,
+		/*
+		jslintOptions: {
+			ignoreWeirdProgram: true,
+			ignoreWeirdReturn: true,
+			useJSLint: true
+			, options: {
+				sloppy:true,
+				//plusplus:true,
+				indent:4,
+				white:true,
+				predef:["cgf", "actions", "conditions",
+					"entry", "configuration",
+					"configuration_hints", "postactions"]
+			}
+		},
+		*/
+		extraKeys: {
+            "Ctrl-Q": function(cm){ cm.foldCode(cm.getCursor()); },
+			"Ctrl-Space": "autocomplete",
+			"F11": function(cm) {
+				setFullScreen(cm, !isFullScreen(cm));
+			},
+			"Esc": function(cm) {
+				if (isFullScreen(cm))
+                {
+                    setFullScreen(cm, false);
+                }
+			}
+			//For jumping to next/previous lint issue
+			, "F4": "NextIssue"
+			, "Shift-F4": "PreviousIssue"
+			//For continue comment
+			, "Shift-Enter": "newlineAndIndentContinueComment"
+			//For bookmarking
+			, "Ctrl-F2": "ToggleBookmark"
+			, "Shift-F2": "PreviousBookmark"
+			, "F2": "NextBookmark"
+			, "Shift-Ctrl-F2": "ClearAllBookmarks"
+		},
+		foldGutter: {
+			rangeFinder: new CodeMirror.fold.combine(CodeMirror.fold.brace, CodeMirror.fold.comment)
+		},
+		gutters: ["CodeMirror-lint-markers", "bookmarks", "CodeMirror-foldgutter"],
+		//lintWith: CodeMirror.javascriptValidator
+		lintWith: {
+			getAnnotations: CodeMirror.javascriptValidator,
+			showInline: true
+		}
+		//, gutters: ["CodeMirror-lint-markers"]
+    	//, lintWith: CodeMirror.jsonValidator
+	});
+	CodeMirror.commands.autocomplete = function(cm) {
+		CodeMirror.showHint(cm, CodeMirror.javascriptHint);
+	};
+	//Future: add cgf namespace stubs for show-hint add-on
+	/*
+	cgf = {
+		getPrimaryAirTarget: function() {},
+		getDamageState: function() {},
+		setDamageState: function() {}
+	};
+	*/
+	toggleUseSpaceNotTab();
+}
+
+$(document).ready(load);
+</script>
+
+</head>
+<body>
+  <div style="background: url(images/sweater_70.png) no-repeat scroll 0 0;
+    background-color: #C8BEAC; height: 3in; left: 0; position: absolute;
+    top: 0; width: 100%; z-index: -1;">
+  </div><div style="float: left; height: 0.75in; width: 5in;">&nbsp;</div>
+  <script src="js/jslint.js"></script>
+  <script src="js/adsafe.js"></script>
+  <script src="js/intercept.js"></script>
+<div id="JSLINT_">
+  <div style="background-color: #C8BEAC; float:right; margin: 1em; padding-left: 1em; padding-right: 1em;">
+    <a href="lint.html">Read the instructions.</a><br>
+    <a href="#JSLINT_OPTIONS">Set the options.</a><br>
+  </div>
+    <div style="background-color: #C8BEAC; float: right; font-family: sans-serif;
+    margin: 1em; padding-left: 1em; padding-right: 1em;">
+      The&nbsp;<a href="http://javascript.crockford.com/">JavaScript</a>&nbsp;Code Quality Tool<br>
+      <div id=JSLINT_EDITION></div>
+      <div><table style="background-color: #00FF00"><tr>
+      	<td title="JSLint Commandline: an offline version of JSLint as a Node add-on, with batch processing.">
+      	<b>Get: <a href="http://github/sdneon/jslint-cli">JSLint-CLI</a></b></td></tr></table></div>
+    </div>
+    <fieldset id=JSLINT_SOURCE><button>clear</button><h1 onclick="if (cm) {cm.focus();}">Source</h1>
+        <textarea id="txtCode" rows="24" placeholder="// Paste quality code here"></textarea>
+    </fieldset>
+    <center><button id=JSLINT_BUTTON>JSLint</button></center>
+    <fieldset id=JSLINT_ERRORS style="display: none;"><button>clear</button><h1>Errors</h1><div></div>
+    </fieldset>
+    <fieldset id=JSLINT_REPORT style="display: none;"><button>clear</button><h1>Function
+        Report</h1><div></div>
+    </fieldset>
+    <fieldset id=JSLINT_PROPERTIES style="display: none;"><button>select</button><h1>Properties
+        Directive</h1><textarea rows="8" readonly=true ></textarea>
+    </fieldset>
+    <fieldset id=JSLINT_OPTIONS><button>clear options</button><h1>Options</h1>
+        <div class=tristate>Assume...
+          <div title=browser><button></button><var></var> a browser</div>
+          <div title=couch><button></button><var></var> CouchDB</div>
+          <div title=devel><button></button><var></var> console,alert,&nbsp;...</div>
+          <div title=node><button></button><var></var> Node.js</div>
+          <div title=rhino><button></button><var></var> Rhino</div>
+          <br>
+          <div title=passfail><button></button><var></var> Stop on first error</div>
+        </div>
+        <div class=tristate>Tolerate...
+          <div title=ass><button></button><var></var> assignment expressions</div>
+          <div title=bitwise><button></button><var></var> bitwise operators</div>
+          <div title=closure><button></button><var></var> Google Closure</div>
+          <div title=continue><button></button><var></var> continue</div>
+          <div title=debug><button></button><var></var> debugger statements</div>
+          <div title=eqeq><button></button><var></var> ==&nbsp;and&nbsp;!=</div>
+        </div>
+        <div class=tristate>Tolerate...
+          <div title=evil><button></button><var></var> eval </div>
+          <div title=forin><button></button><var></var> <a href="for-in-intrigue.html">unfiltered</a> for  in </div>
+          <div title=newcap><button></button><var></var> uncapitalized constructors</div>
+          <div title=nomen><button></button><var></var> dangling _ in identifiers</div>
+          <div title=plusplus><button></button><var></var> ++&nbsp;and&nbsp;-- </div>
+          <div title=regexp><button></button><var></var> .&nbsp;and&nbsp;[^ ... ]&nbsp;in&nbsp;/RegExp/</div>
+          <div title=unparam><button></button><var></var> unused parameters</div>
+        </div>
+        <div class=tristate>Tolerate...
+          <div title=sloppy><button></button><var></var> missing&nbsp;'use strict'&nbsp;pragma</div>
+          <div title=stupid><button></button><var></var> stupidity</div>
+          <div title=sub><button></button><var></var> inefficient subscripting</div>
+          <div title=todo><button></button><var></var> TODO comments</div>
+          <div title=vars><button></button><var></var> many var statements per function</div>
+          <div title=white><button></button><var></var> messy white space</div>
+        </div>
+        <div>
+            <input id=JSLINT_INDENT type=text title=indent value="" autocomplete=off>
+            <label for=JSLINT_INDENT title=indent>Indentation
+            </label>
+            <br>
+            <input id=JSLINT_MAXLEN type=text title=maxlen value="" autocomplete=off>
+            <label for=JSLINT_MAXLEN title=maxlen>Maximum line length
+            </label>
+            <br>
+            <input id=JSLINT_MAXERR type=text title=maxerr value="" autocomplete=off>
+            <label for=JSLINT_MAXERR title=maxerr>Maximum number of errors
+            </label>
+        </div>
+        <textarea id=JSLINT_PREDEF title=predef placeholder="predefine global variables here"></textarea>
+    </fieldset>
+    <fieldset id=JSLINT_JSLINT><button>select</button><h1>JSLint Directive</h1>
+        <textarea rows=2 readonly=true placeholder="Computed /*jslint */ directive"></textarea>
+    </fieldset>
+    <!-- Add our CodeMirror editor options -->
+    <fieldset id=EDITOR_OPTIONS>
+    	<div style='float:left; padding: 1em;'><a href='' title='Jump to editor/top' onclick='window.scrollTo(0,0); return false;'>^</a></div>
+    	<h1>Editor Options</h1>
+        <div>Code Analysis...
+			<div title='This toggles the live static code analysis running in the editor.'>
+				<input id='cbEnableCMLint' type='checkbox' checked
+					title='This toggles the live static code analysis running in the editor.'
+					onchange='toggleCMLint(); init_ui.saveSettings();'>Enable live analysis</input>
+			</div>
+			<div title='This toggles whether to show lint issues inline with codes or in the gutter.'>
+				<input id='cbShowInline' type='checkbox' checked
+					title='This toggles whether to show lint issues inline with codes or in the gutter.'
+					onchange='toggleCMLint(); init_ui.saveSettings();'>Show issue(s) inline</input>
+			</div>
+			<div title='This toggles whether to use less stringent JSHint instead of JSLint.'>
+				<input id='cbUseJSHint' type='checkbox'
+					title='This toggles whether to use less stringent JSHint instead of JSLint. Applies only to editor; page will still use JSLint!'
+					onchange="cm.setOption('jslintOptions', {useJSLint:!($('#cbUseJSHint').prop('checked'))}); init_ui.saveSettings();")>Use JSHint instead</input>
+			</div>
+		</div>
+		<div>Show...
+			<div title='This toggles whether to make tabs visible.'>
+				<input id='cbShowTabs' type='checkbox' checked
+					title='This toggles whether to make tabs visible.'
+					onchange="toggleCMTabs(); init_ui.saveSettings();">tabs</input>
+			</div>
+			<div title='This toggles whether to show line numbers.'>
+				<input id='cbShowLineNumbers' type='checkbox' checked
+					title='This toggles whether to show line numbers.'
+					onchange="cm.setOption('lineNumbers', !!($('#cbShowLineNumbers').prop('checked'))); init_ui.saveSettings();">line numbers</input>
+			</div>
+			<div title='This toggles whether to show trailing space.'>
+				<input id='cbShowTrailingSpace' type='checkbox' checked
+					title='This toggles whether to show trailing space.'
+					onchange="cm.setOption('showTrailingSpace', !!($('#cbShowTrailingSpace').prop('checked'))); init_ui.saveSettings();; cm.refresh();">trailing space</input>
+			</div>
+		</div>
+		<div>Editing...
+			<div title='This toggles whether to highlight active line.'>
+				<input id='cbStyleActiveLine' type='checkbox' checked
+					title='This toggles whether to highlight active line.'
+					onchange="cm.setOption('styleActiveLine', !!($('#cbStyleActiveLine').prop('checked'))); init_ui.saveSettings();; cm.refresh();">Highlight active line</input>
+			</div>
+			<div title='This toggles whether to auto-close brackets.'>
+				<input id='cbAutoCloseBrackets' type='checkbox' checked
+					title='This toggles whether to auto-close brackets.'
+					onchange="cm.setOption('autoCloseBrackets', !!($('#cbAutoCloseBrackets').prop('checked'))); init_ui.saveSettings();">Auto-close brackets</input>
+			</div>
+			<div title='This toggles whether to convert new tabs to spaces and indent with spaces.'>
+				<input id='cbUseSpaceNotTab' type='checkbox' checked
+					title='This toggles whether to convert new tabs to spaces and indent with spaces.'
+					onchange="toggleUseSpaceNotTab(); init_ui.saveSettings();">Replace tabs with spaces</input>
+			</div>
+			<div title='This toggles whether to comment blank lines too when toggling block comment.'>
+				<input id='cbCommentBlankLines' type='checkbox' checked
+					title='This toggles whether to comment blank lines too when toggling block comment.'
+					onchange="updateCommentBlankLines(); init_ui.saveSettings();">Comment blank lines</input>
+			</div>
+		</div>
+		<div title='Theme for editor'>Theme:<select onchange="selectTheme(); init_ui.saveSettings();" id='selTheme'>
+			<option>default</option>
+			<option>3024-day</option>
+			<option>3024-night</option>
+			<option>ambiance</option>
+			<option>base16-dark</option>
+			<option>base16-light</option>
+			<option selected>blackboard</option>
+			<option>cobalt</option>
+			<option>eclipse</option>
+			<option>elegant</option>
+			<option>erlang-dark</option>
+			<option>lesser-dark</option>
+			<option>mbo</option>
+			<option>mdn-like</option>
+			<option>midnight</option>
+			<option>monokai</option>
+			<option>neat</option>
+			<option>neo</option>
+			<option>night</option>
+			<option>paraiso-dark</option>
+			<option>paraiso-light</option>
+			<option>pastel-on-dark</option>
+			<option>rubyblue</option>
+			<option>solarized</option>
+			<option>the-matrix</option>
+			<option>tomorrow-night-bright</option>
+			<option>tomorrow-night-eighties</option>
+			<option>twilight</option>
+			<option>vibrant-ink</option>
+			<option>xq-dark</option>
+			<option>xq-light</option>
+			<option>zenburn</option>
+		</select></div>
+    </fieldset>
+	<fieldset id='divEditorKeysHelp'>
+    	<div style='float:left; padding: 1em;'><a href='' title='Jump to editor/top' onclick='window.scrollTo(0,0); return false;'>^</a></div>
+		<h1>Editor Keyboard Shortcuts</h1>
+		<div style="width: 100%; display: table;"><div style="display: table-row">
+			<div style="display: table-cell; width: 50%;">
+				<dl style="background: #FFFFFF; padding: 5px 2em 5px 0px;">
+					<dt class='dt_keymap'>Ctrl-F / Cmd-F</dt><dd class='dd_keymap'>Find text</dd>
+					<dt class='dt_keymap'>Ctrl-G / Cmd-G</dt><dd class='dd_keymap'>Find next</dd>
+					<dt class='dt_keymap'>Shift-Ctrl-G / Shift-Cmd-G</dt><dd class='dd_keymap'>Find previous</dd>
+					<dt class='dt_keymap'>Shift-Ctrl-F / Cmd-Option-F</dt><dd class='dd_keymap'>Replace</dd>
+					<dt class='dt_keymap'>Shift-Ctrl-R / Shift-Cmd-Option-F</dt><dd class='dd_keymap'>Replace all</dd>
+					<hr>
+					<dt class='dt_keymap'>Shift-Ctrl-C</dt><dd class='dd_keymap'>Toggle comment</dd>
+					<dt class='dt_keymap'>Shift-Enter</dt><dd class='dd_keymap'>Continue block comment to next line</dd>
+					<hr>
+					<dt class='dt_keymap'>Ctrl-Space</dt><dd class='dd_keymap'>Activate auto-completion</dd>
+				</dl>
+			</div>
+			<div style="display: table-cell;">
+				<dl style="background: #FFFFFF; padding: 5px 2em 5px 0px;">
+					<dt class='dt_keymap'>F4</dt><dd class='dd_keymap'>Jump to next lint issue</dd>
+					<dt class='dt_keymap'>Shift-F4</dt><dd class='dd_keymap'>Jump to previous lint issue</dd>
+					<hr>
+					<dt class='dt_keymap'>Ctrl-F2</dt><dd class='dd_keymap'>Toggle bookmark</dd>
+					<dt class='dt_keymap'>F2</dt><dd class='dd_keymap'>Jump to next bookmark</dd>
+					<dt class='dt_keymap'>Shift-F2</dt><dd class='dd_keymap'>Jump to previous bookmark</dd>
+					<dt class='dt_keymap'>Shift-Ctrl-F2</dt><dd class='dd_keymap'>Clear all bookmarks</dd>
+					<hr>
+					<dt class='dt_keymap'>F11</dt><dd class='dd_keymap'>Toggle fullscreen editing</dd>
+					<dt class='dt_keymap'>Escape</dt><dd class='dd_keymap'>Exit fullscreen editing</dd>
+				</dl>
+			</div>
+		</div></div>
+		<p>
+	</fieldset>
+    <script>
+    ADSAFE.id("JSLINT_");
+    </script>
+
+    <script src="js/init_ui.js"></script>
+
+    <script>
+    ADSAFE.go("JSLINT_", function (dom, lib) {
+        'use strict';
+        lib.init_ui(dom);
+        init_ui = lib;
+    });
+    </script>
+</div>
+<center>
+<p> Copyright 2002&nbsp;<a href="lint.html">Douglas
+  Crockford.</a>&nbsp;<a target="_blank" href="http://www.crockford.com/">All
+  Rights Reserved Wrrrldwide and Beyond!</a> <br>
+Enhanced 2015 Neon.<br>
+  <a href="http://javascript.crockford.com/code.html" target="_blank">Code
+  Conventions for the JavaScript Programming Language.</a><br>
+  <a href="https://plus.google.com/communities/104441363299760713736" target="_blank">Join
+  the JSLint Community.</a> </p>
+</center></body>
+</html>

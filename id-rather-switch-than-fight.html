@@ -1,0 +1,363 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"><head profile="http://gmpg.org/xfn/11">
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+	<title>I’d Rather switch Than Fight! » Yahoo! User Interface Blog (YUIBlog)</title>
+<!-- 	<title>Yahoo! User Interface Blog (YUIBlog) &raquo; I&#8217;d Rather switch Than Fight!</title> -->
+	 <meta http-equiv="Content-Encoding" content="gzip">
+<meta http-equiv="Accept-Encoding" content="gzip, deflate">
+<!--
+	<style type="text/css" media="screen">
+		@import url(http://www.yuiblog.com/blog/wp-content/themes/yuiblog_v1/style.css);
+	</style>
+-->
+<style>
+body {
+    font-family: Arial !important;
+}
+</style>
+</head>
+
+<body>
+<div id="content">
+
+	<div id="header" onclick="location.href='http://www.yuiblog.com/blog';" style="cursor: pointer;">
+		<h1><a href="http://www.yuiblog.com/blog">Yahoo! User Interface Blog (YUIBlog)</a></h1>
+	</div>
+
+<!-- end header -->
+	<div id="bloque">
+
+		<div id="noticias">
+
+		<!--don't suppress WP formatting-->
+			<div class="entrada">
+				<h2 id="post-97"><a href="http://www.yuiblog.com/blog/2007/04/25/id-rather-switch-than-fight/" rel="bookmark" title="Permanent Link to I’d Rather &lt;code&gt;switch&lt;/code&gt; Than Fight!">I’d Rather <code>switch</code> Than Fight!</a></h2>
+				<small>April 25, 2007 at 3:46 pm by Douglas Crockford | In <a href="http://www.yuiblog.com/blog/category/development/" title="View all posts in Development" rel="category tag">Development</a> | <a href="#comments" title="Comment on I’d Rather switch Than Fight!">20 Comments</a></small>
+
+			<p>JavaScript’s <code>switch</code> statement was inspired by Java’s <code>switch</code> statement, which was inspired by C++’s <code>switch</code> statement, which was inspired by C’s <code>switch</code> statement, which combined aspects of C. A. R. Hoare’s <code>case</code> statement and Fortran’s computed <code>goto</code> statement. Dijkstra considered the <code>goto</code> statement to be harmful, which it in fact is, which is why the <code>goto</code> has been omitted from most modern programming languages. But some of the <code>goto</code>‘s problematic nature survives in the <code>switch</code>, so some extra care must be employed when using it.</p>
+<p>The problem with <code>switch</code> was once thought to be its
+cleverest feature: Fallthru. If you do not explicitly interrupt the flow
+ of control, after executing the code associated with a case, the code
+of the next case is run too. This provides for a sort of local code
+reuse, but it can make programs that are harder to read, and it can mask
+ bugs. Accidental fallthru bugs can be very expensive to identify and
+fix. The best defense against them is to never intentionally use
+fallthru. That way, if a fallthru ever appears in your code, you can
+immediately recognize it as a defect that needs correction. That is a
+lot easier than trying to figure out which fallthrus are accidental and
+which are not.</p>
+<p>Features like fallthru are <i>attractive nuisances</i>. They are
+sometimes useful, but they encourage weak coding patterns. JavaScript
+has more than its share of attractive nuisances (<a href="http://yuiblog.com/blog/2006/04/11/with-statement-considered-harmful/"><code>with</code></a>, <a href="http://yuiblog.com/blog/2006/06/01/global-domination/">implied globals</a>, <a href="http://yuiblog.com/blog/2006/11/13/javascript-we-hardly-new-ya/"><code>new</code></a>, and semicolon insertion, to name a few). Your programs will be stronger if you avoid them.</p>
+<p>JavaScript’s <code>switch</code> is better than Java’s because it
+allows matching on strings. This is really useful. The ability to switch
+ on strings satisfies the role that <code>enum</code> provides in other languages. Being able to do more with less is a mark of a good programming language.</p>
+<p>JavaScript matches its cases with the <code>===</code> operator, which tests for equality without type coercion. (The <code>==</code> operator does type coercion, which sometimes produces surprising results. It is another attractive nuisance.) The value <code>NaN</code> cannot be found to be equal to itself, so</p>
+<blockquote><p><code>case NaN:</code></p></blockquote>
+<p>will never match. </p>
+</div>
+
+
+
+<h2 id="comments">20 Comments
+</h2>
+
+
+<p>
+
+</p>
+
+<ol id="commentlist">
+
+
+
+	<li id="comment-99829" class="class_comment1">
+	<p>Excellent advice, as always!  The trend of competing to produce more
+ and more concise JavaScript expressions is leading to some really
+abstruse scripts, making their management a nightmare.  I would rather
+spend a couple of cents on bandwidth than a couple of hours deciphering
+code.</p>
+	<p class="alignright"><small>Comment by <a href="http://www.jdbartlett.com/" rel="external nofollow" class="url">jdbartlett</a> — April 25, 2007 <a href="#comment-99829">#</a> </small></p>
+	</li>
+
+
+
+
+
+	<li id="comment-99839" class="class_comment2">
+	<p>I’m not sure switch fall throughs are evil in and of themselves.
+They can be quite helpful when used correctly, though I typically
+encourage people to comment these fall throughs instead of leaving
+others guessing:</p>
+<p>switch(value){<br>
+    case 0:<br>
+        doSomething();<br>
+        /*falls through*/<br>
+    case 1:<br>
+        doSomethingElse();<br>
+}</p>
+	<p class="alignright"><small>Comment by <a href="http://www.nczonline.net/" rel="external nofollow" class="url">Nicholas C. Zakas</a> — April 25, 2007 <a href="#comment-99839">#</a> </small></p>
+	</li>
+
+
+
+
+
+	<li id="comment-99885" class="class_comment1">
+	<p>I remember seeing switch with fall through in the jsmin code: the
+action function. Do you now consider that a good or bad use of switch?</p>
+<p>I agree about “with”, semicolon insertion, and implied globals but I
+have never understood your objection to “new”. What is it that is so
+difficult with new? I’ve never had a problem with it.</p>
+	<p class="alignright"><small>Comment by <a href="http://peter.michaux.ca/" rel="external nofollow" class="url">Peter Michaux</a> — April 25, 2007 <a href="#comment-99885">#</a> </small></p>
+	</li>
+
+
+
+
+
+	<li id="comment-99927" class="class_comment2">
+	<p>&gt; The == operator does type coercion, which sometimes produces surprising results. It is another attractive nuisance.</p>
+<p>Interesting. Do you do most of your comparisons with the ===
+operator? I usually use it only when I know it will be necessary (e.g.
+when I need “” and 0 to be different). But I wonder if I would avoid
+some unnecessary errors by making === my default choice, instead of ==.</p>
+	<p class="alignright"><small>Comment by JW — April 25, 2007 <a href="#comment-99927">#</a> </small></p>
+	</li>
+
+
+
+
+
+	<li id="comment-100134" class="class_comment1">
+	<p>I wrote JSMin a few years ago. I think my programming style has
+improved since then. If I were writing it today, I would not use
+fallthrus. </p>
+<p>My style has evolved significantly over the years as a result of
+understanding that most of my programming time is spent in debugging.
+Anything I can do in coding to reduce debugging is a huge win.</p>
+<p>I don’t use JavaScript’s == and !=. They don’t do what I mean.</p>
+	<p class="alignright"><small>Comment by <a href="http://javascript.crockford.com/" rel="external nofollow" class="url">Douglas Crockford</a> — April 26, 2007 <a href="#comment-100134">#</a> </small></p>
+	</li>
+
+
+
+
+
+	<li id="comment-100228" class="class_comment2">
+	<p>[...] Douglas Crockford gibt im Yahoo! Interace Blog eine kleine
+Lehrstunde in Sachen switch-Statement. switch, geerbt aus einer langen
+Ahnenreihe von Programmiersprachen (Java, C++, C), kann ein mächtiges
+Instrument sein. Aber – mächtige Instrumente habe das oft an sich – es
+ist auch gefährlich: man kann es viel zu sehr zu einem goto umwandeln,
+was man nicht will. Auch wenn die Erinnerung an alte Brotkastentage
+lebt: [...]</p>
+	<p class="alignright"><small>Pingback by <a href="http://codecandies.de/2007/04/26/switch-nicht-durchfallen-lassen/" rel="external nofollow" class="url">Switch nicht durchfallen lassen » Code Candies</a> — April 26, 2007 <a href="#comment-100228">#</a> </small></p>
+	</li>
+
+
+
+
+
+	<li id="comment-100229" class="class_comment1">
+	<p>The readability problem is solved by a <code>// falls through</code>
+ comment. This is not a case of “may be harmful” but rather a personal
+coding style preference, so I’m glad you represented it as such.</p>
+<p>FWIW, “fallthru” isn’t a word.</p>
+	<p class="alignright"><small>Comment by <a href="http://h3h.net/" rel="external nofollow" class="url">Brad Fults</a> — April 26, 2007 <a href="#comment-100229">#</a> </small></p>
+	</li>
+
+
+
+
+
+	<li id="comment-100492" class="class_comment2">
+	<p>It would be interesting to hear more abut why fall through was once
+considered it’s “clevest feature”. What was the original use case?</p>
+	<p class="alignright"><small>Comment by <a href="http://husted.com/ted/" rel="external nofollow" class="url">Ted Husted</a> — April 26, 2007 <a href="#comment-100492">#</a> </small></p>
+	</li>
+
+
+
+
+
+	<li id="comment-100781" class="class_comment1">
+	<p>[...] I’d Rather switch Than Fight! JavaScript has more than its
+share of attractive nuisances (with, implied globals, new, and semicolon
+ insertion, to name a few). Your programs will be stronger if you avoid
+them. COBOL’s GOTO (with the implied EXIT) is trouble too! (tags:
+JavaScript Programming)   Share and Enjoy:These icons link to social
+bookmarking sites where readers can share and discover new web pages.
+[...]</p>
+	<p class="alignright"><small>Pingback by <a href="http://billy-girlardo.com/delicious/2007/04/25/links-for-2007-04-26/" rel="external nofollow" class="url">All in a days work…</a> — April 27, 2007 <a href="#comment-100781">#</a> </small></p>
+	</li>
+
+
+
+
+
+	<li id="comment-100876" class="class_comment2">
+	<p>The point is that you must actively do something to stop a
+fall-through. That’s why it causes bugs. If the switch were designed
+differently, where you needed to include a continue or some other
+keyword in order to turn on fall-through, then the only times when a
+fall-through would happen is when the programmer intended it to happen.
+In the end, avoiding most bugs is all about aligning the code semantics
+with programmer intent. (It’s not like we’re dumb. We know what we’re
+trying to do, in most cases.)</p>
+	<p class="alignright"><small>Comment by <a href="http://www.mattwarden.com/" rel="external nofollow" class="url">mwarden</a> — April 27, 2007 <a href="#comment-100876">#</a> </small></p>
+	</li>
+
+
+
+
+
+	<li id="comment-100886" class="class_comment1">
+	<p>The case you list is very useful and not bug-prone. It’s when there
+are lines of code but no break in between cases that things can get
+really tricky. Some languages (I’m pretty sure C# and Java do this)
+allow for your case while disallowing the general, tricky case.</p>
+	<p class="alignright"><small>Comment by <a href="http://jeff.cutsinger.org/" rel="external nofollow" class="url">Jeff</a> — April 27, 2007 <a href="#comment-100886">#</a> </small></p>
+	</li>
+
+
+
+
+
+	<li id="comment-102042" class="class_comment2">
+	<p>As an old Fortan guy, let me put in a good word for GOTO. Forgetting
+ for a second that it’s just a branch statement, and that no matter the
+language all loop and if/switch/case/whatever statements get compiled
+down to branches, sometimes jumping out of  hairy nested constructs is
+easier to figure out with a GOTO than with a series of labeled break
+statements. (Whether the code should be refactored to eliminate the
+hairy nest is another issue altogether.)</p>
+<p>However, a computed GOTO really is evil.</p>
+	<p class="alignright"><small>Comment by Brad — April 29, 2007 <a href="#comment-102042">#</a> </small></p>
+	</li>
+
+
+
+
+
+	<li id="comment-102427" class="class_comment1">
+	<blockquote cite="Brad"><p>Whether the code should be refactored to eliminate the hairy nest is another issue altogether.</p></blockquote>
+<p>Actually, it’s the same issue! GOTO is evil because it allows you to
+get away with hairy coding, and makes it even hairier. I’m no fan of <em>switch/break/fallthrough</em>, but at least the break doesn’t have to specify where to go next – all breaks go to the same place.</p>
+	<p class="alignright"><small>Comment by johnnysaucepn — April 30, 2007 <a href="#comment-102427">#</a> </small></p>
+	</li>
+
+
+
+
+
+	<li id="comment-102632" class="class_comment2">
+	<p><i>GOTO is evil because it allows you to get away with hairy coding</i></p>
+<p>The hairy code I’m talking about is not something that’s “gotten away
+ with,” but a result of an evolutionary process, of years of
+modification by a multitude of programmers given a myriad of
+requirements under many time constraints. You know, the real world.</p>
+<p>And I compared GOTO to labeled breaks, which don’t all go to the same place.</p>
+	<p class="alignright"><small>Comment by Brad — April 30, 2007 <a href="#comment-102632">#</a> </small></p>
+	</li>
+
+
+
+
+
+	<li id="comment-102694" class="class_comment1">
+	<p>Since the fallthru is the exception rather then the rule, the
+‘break’ in each case should be assumed and a ‘fallthru’ command used to
+explicitly break the rule (no pun intended). However it is dificult to
+retrospectively correct for poor design.</p>
+	<p class="alignright"><small>Comment by Lars — April 30, 2007 <a href="#comment-102694">#</a> </small></p>
+	</li>
+
+
+
+
+
+	<li id="comment-104131" class="class_comment2">
+	<p>I always thought there was something fishy about that switch
+statement…I always felt dirty using it and never exactly could put my
+finger on it.</p>
+	<p class="alignright"><small>Comment by <a href="http://romiro.com/" rel="external nofollow" class="url">romiro</a> — May 3, 2007 <a href="#comment-104131">#</a> </small></p>
+	</li>
+
+
+
+
+
+	<li id="comment-105104" class="class_comment1">
+	<p>I actually liked goto. It made looping easy in QBasic. Doesn’t ActionScript also have the notion of goto?</p>
+	<p class="alignright"><small>Comment by <a href="http://www.dustindiaz.com/" rel="external nofollow" class="url">Dustin Diaz</a> — May 4, 2007 <a href="#comment-105104">#</a> </small></p>
+	</li>
+
+
+
+
+
+	<li id="comment-107358" class="class_comment2">
+	<p>What if the “break” statement was on the same line as “case.” Would that make it more obvious?</p>
+<p>switch(arg) {<br>
+  case “”:</p>
+<p>  break; case “”:</p>
+<p>  break; case “”:</p>
+<p>  break; case “”:</p>
+<p>  case “”:</p>
+<p>  break; case “”:<br>
+}</p>
+	<p class="alignright"><small>Comment by Jordan — May 8, 2007 <a href="#comment-107358">#</a> </small></p>
+	</li>
+
+
+
+
+
+	<li id="comment-190088" class="class_comment1">
+	<p>Ted, I’m not sure about fall through being switch’s “cleverest feature”, but it could be a reference to <a href="http://groups.google.com/group/net.lang.c/msg/66008138e07aa94c" rel="nofollow">Duff’s device</a>.</p>
+<p>JavaScript saw fit to change switch (compared to the C version) by
+not allowing the case statements to be embedded in interior statements
+(as in Duff’s device), but mysteriously didn’t take to opportunity to
+remove fall through.  Strange.</p>
+<p>switch in JavaScript has another “attractive nuisance” too (love the
+term).  You can have non constant expressions in the case labels.
+Happily <a href="http://drj11.wordpress.com/2007/09/03/javascript-switch/" rel="nofollow">I seem to be the only one to have noticed that</a>.</p>
+	<p class="alignright"><small>Comment by <a href="http://drj11.wordpress.com/" rel="external nofollow" class="url">David Jones</a> — September 13, 2007 <a href="#comment-190088">#</a> </small></p>
+	</li>
+
+
+
+
+
+	<li id="comment-322158" class="class_comment2">
+	<p>I only use switch’s fallthrough for grouping<br>
+<code><br>
+switch(i)<br>
+{<br>
+       case 3:<br>
+       case 6:<br>
+              dosomething()<br>
+              break;<br>
+       case 1:<br>
+       case 4:<br>
+              doSomethingElse();<br>
+              break;<br>
+       default:<br>
+              doSomethingElseAllTogether()<br>
+}<br>
+</code></p>
+<p>In such cases the fallthrough is easy to pick up and very a sementical solution.</p>
+<p>When 3 needs to do somethingOdd() and doSomething() and 6 only needs
+to doSomething() i generally avoid, and thus agree with the artice, the
+usage of switch.</p>
+	<p class="alignright"><small>Comment by Martijn Laarman — March 13, 2008 <a href="#comment-322158">#</a> </small></p>
+	</li>
+
+
+
+
+</ol>
+/div>
+</div></body></html>

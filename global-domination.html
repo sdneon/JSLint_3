@@ -1,0 +1,466 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"><head profile="http://gmpg.org/xfn/11">
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+	<title>Global Domination » Yahoo! User Interface Blog (YUIBlog)</title>
+<!-- 	<title>Yahoo! User Interface Blog (YUIBlog) &raquo; Global Domination</title> -->
+	 <meta http-equiv="Content-Encoding" content="gzip">
+<meta http-equiv="Accept-Encoding" content="gzip, deflate">
+<!--
+	<style type="text/css" media="screen">
+		@import url(http://www.yuiblog.com/blog/wp-content/themes/yuiblog_v1/style.css);
+	</style>
+-->
+<style>
+body {
+    font-family: Arial !important;
+}
+</style>
+</head>
+
+<body>
+<div id="content">
+
+	<div id="header" onclick="location.href='http://www.yuiblog.com/blog';" style="cursor: pointer;">
+		<h1><a href="http://www.yuiblog.com/blog">Yahoo! User Interface Blog (YUIBlog)</a></h1>
+	</div>
+
+<!-- end header -->
+	<div id="bloque">
+
+		<div id="noticias">
+
+		<!--don't suppress WP formatting-->
+			<div class="entrada">
+				<h2 id="post-33"><a href="http://www.yuiblog.com/blog/2006/06/01/global-domination/" rel="bookmark" title="Permanent Link to Global Domination">Global Domination</a></h2>
+				<small>June 1, 2006 at 11:27 am by Douglas Crockford | In <a href="http://www.yuiblog.com/blog/category/development/" title="View all posts in Development" rel="category tag">Development</a> | <a href="#comments" title="Comment on Global Domination">29 Comments</a></small>
+
+			<p>JavaScript, as realized in browsers, is a load-and-go programming
+language. Programs are delivered to the execution site as text. This is a
+ good fit for the web, which is at its root a text delivery system. The
+program text is  <code>eval</code>‘d, which compiles it into an
+executable form and then immediately executes it. That execution can
+leave artifacts in the window’s global object.</p>
+<p>The global object is the global namespace that holds the top level
+functions and global variables. Variables which are not explicitly
+defined are implied global variables, and their names are also kept in
+the global object. This was a convenience for the little scripts that
+Navigator 2 was expected to support. In the decade since NS2, those
+little scripts have grown into Ajax applications, and the true nature of
+ the global object is revealed:</p>
+<p><strong>Global variables are evil.</strong></p>
+<p>Global variables are a source of unreliability and insecurity.
+Fortunately, JavaScript includes tools for allowing us to drastically
+minimize our use of globals, which makes our programs more robust. This
+becomes increasingly important as our programs get bigger, and as we mix
+ in and mash up program components from multiple authors. Reducing our
+dependency on globals increases the likelihood that collisions are
+avoided and that the program components work harmoniously.</p>
+<p>An objective measure of the quality of a JavaScript program is <em>How many global variables and global functions does it have?</em>
+ A large number is bad because the chance of bad interactions with other
+ programs goes up. Ideally, an application, library, component, or
+widget defines only a single global variable. That variable should be an
+ object which contains and is the root namespace for all of your stuff.</p>
+<p>Yahoo’s single global is <code>YAHOO</code>. It is spelled in all
+caps to identify it as something special, since all lower case is
+ordinary and initial caps indicates a constructor. Being in all caps, it
+ is unlikely that someone would use it accidentally, which further
+reduces the likelihood of collision.</p>
+<p>Yahoo is the world’s biggest website. Eventually, all of Yahoo’s JavaScript and browser webstate will be accessible through the <code>YAHOO</code> object.</p>
+<p>But this technique also works well with the smallest library or
+widget. It is a clean, efficient way of organizing your program’s
+resources. The performance hit in having to access through a single
+global is negligible. JavaScript is very good at resolving such
+expressions. It is more than offset by the self-documentation and
+reliability benefits.</p>
+<p>Generally a shallow tree is better than a deep tree. One could imagine that <code>YAHOO.util.Dom.get</code> could have been factored more compactly perhaps as  <code>YAHOO.get</code>. And perhaps someday it will, but for now <code>YAHOO.util.Dom.get</code>
+ is not measurably slower, and it is helping Yahoo to manage its
+evolving codebase. (And if you don’t like the length, you only have to
+type it once. See <a href="with-statement-considered-harmful.html"><code>with</code> Statement Considered Harmful</a>.)</p>
+			</div>
+
+
+
+<h2 id="comments">29 Comments
+</h2>
+
+
+<p>
+
+</p>
+
+<ol id="commentlist">
+
+
+
+	<li id="comment-1686" class="class_comment1">
+	<p>Bravo for setting an example. Perhaps I can use this to prod my employer to move in a similar direction. Thanks!</p>
+	<p class="alignright"><small>Comment by <a href="http://www.barelyfitz.com/" rel="external nofollow" class="url">Patrick Fitzgerald</a> — June 1, 2006 <a href="#comment-1686">#</a> </small></p>
+	</li>
+
+
+
+
+
+	<li id="comment-1687" class="class_comment2">
+	<p>I can’t agree less than 100%. Lots of global variables hanging
+around is one thing, and good quality JS code is another. And these two
+things rarely meet one another.</p>
+<p>I would like to read more about global namespace pollution via
+prototype extension of native JS objects (String, Array, etc). Isn’t it
+equally bad? And what should be said for some very popular JS libraries
+that are doing just that?</p>
+	<p class="alignright"><small>Comment by Theodor Zoulias — June 1, 2006 <a href="#comment-1687">#</a> </small></p>
+	</li>
+
+
+
+
+
+	<li id="comment-1704" class="class_comment1">
+	<p>Theodor Zoulias: Good point on the prototype extension of native
+objects. It’s conceivable that extending a string and/or some other
+object could potentially collide with another author’s extension of the
+same object.</p>
+<p>However, I also agree with the Douglas that through namespacing you can avoid similar situations as pertaining to your own code.</p>
+	<p class="alignright"><small>Comment by <a href="http://arapehlivanian.com/" rel="external nofollow" class="url">Ara Pehlivanian</a> — June 2, 2006 <a href="#comment-1704">#</a> </small></p>
+	</li>
+
+
+
+
+
+	<li id="comment-1709" class="class_comment2">
+	<p>[...] Global namespaces are a pain, and so is global domination;-) [...]</p>
+	<p class="alignright"><small>Pingback by <a href="http://blogs.ebusiness-apps.com/andre/?p=173" rel="external nofollow" class="url">Andre’s Blog » Blog Archive » Podcasting it up with the Redmonks</a> — June 2, 2006 <a href="#comment-1709">#</a> </small></p>
+	</li>
+
+
+
+
+
+	<li id="comment-1713" class="class_comment1">
+	<p>&gt; I can’t agree less than 100%</p>
+<p>What does that mean? Does that mean “you do agree more than 100%”? You disagree with less than whole?</p>
+<p>&gt; Lots of global variables hanging around is one thing, and good quality JS code is another</p>
+<p>I’m not sure I fully understand that either. Indeed, lots of global
+variables is one thing, and quality code is another. When there is lots
+of global variables, then the quality of the code becomes bad (or is
+considered to not have as good of quality).</p>
+<p>Typically when working with YUI utils I like to set up the following shortcuts in my own private scope of my applications:</p>
+<p><code>MyApp.example = function() {<br>
+  var $E = YAHOO.util.Event;<br>
+  var $D = YAHOO.util.Dom;<br>
+  var $M = YAHOO.util.Motion;<br>
+  var $ = $D.get;<br>
+  return {<br>
+    init : function() {<br>
+      $E.on(['a','b','c'], 'click', this.fly, $('bar'), true);<br>
+    },<br>
+    fly : function() {<br>
+      var attributes = {<br>
+        width : { by : 50 },<br>
+        height : { by : 50 },<br>
+        points : { to : [100,200] }<br>
+      };<br>
+      var anim = new $A(this, attributes);<br>
+      anim.animate();<br>
+    }<br>
+  };<br>
+}();</code></p>
+<p>The greatest part of it is that it allows me to have my own amount of verbosity. The lookups come at a very, very small price.</p>
+	<p class="alignright"><small>Comment by <a href="http://www.dustindiaz.com/" rel="external nofollow" class="url">Dustin Diaz</a> — June 2, 2006 <a href="#comment-1713">#</a> </small></p>
+	</li>
+
+
+
+
+
+	<li id="comment-1720" class="class_comment2">
+	<p>@Dustin Diaz:<br>
+Ok, I needlessly made overly complex a simple phrase. I just wanted to
+express my total agreement with Mr Crockford’s arguments. :-)</p>
+<p>Your code snippet seems very elegant to me. But as far as I can
+understand your shortcut-using method makes your code faster, not
+slower. In other words the lookups come at a negative price I think.</p>
+	<p class="alignright"><small>Comment by Theodor Zoulias — June 3, 2006 <a href="#comment-1720">#</a> </small></p>
+	</li>
+
+
+
+
+
+	<li id="comment-1722" class="class_comment1">
+	<p>Indeed Theodor, they actually do come at a very small negative
+price. I actually don’t mind the extra time – they are literally
+unnoticeable, even in larger files. You can profile the extra weight
+over a thousand lookups and see for yourself that it’s very small.</p>
+	<p class="alignright"><small>Comment by <a href="http://www.dustindiaz.com/" rel="external nofollow" class="url">Dustin Diaz</a> — June 3, 2006 <a href="#comment-1722">#</a> </small></p>
+	</li>
+
+
+
+
+
+	<li id="comment-1824" class="class_comment2">
+	<p>Good article — and I agree with Theodor:</p>
+<p>!(agreement</p>
+	<p class="alignright"><small>Comment by <a href="http://www.peterfrueh.com/" rel="external nofollow" class="url">Peter Frueh</a> — June 8, 2006 <a href="#comment-1824">#</a> </small></p>
+	</li>
+
+
+
+
+
+	<li id="comment-1925" class="class_comment1">
+	<p>Dustin Diaz,</p>
+<p>It is my understanding that variables starting with $ are intended for library code. Do you consider this a problem?</p>
+	<p class="alignright"><small>Comment by <a href="http://mattwarden.com/" rel="external nofollow" class="url">mwarden</a> — June 11, 2006 <a href="#comment-1925">#</a> </small></p>
+	</li>
+
+
+
+
+
+	<li id="comment-2295" class="class_comment2">
+	<p>Matt,</p>
+<p>The ecmascript specs have something to say about the use of dollar sign.</p>
+<p>“The dollar sign ($) and the underscore (_) are permitted anywhere in
+ an identifier. The dollar sign is intended for use only in mechanically
+ generated code. ”</p>
+<p><a href="http://www.ecma-international.org/publications/standards/Ecma-262.htm" rel="nofollow">http://www.ecma-international.org/publications/standards/Ecma-262.htm</a></p>
+<p>section 7.6</p>
+<p>According to this intention we are best not to start with $</p>
+	<p class="alignright"><small>Comment by peter michaux — June 24, 2006 <a href="#comment-2295">#</a> </small></p>
+	</li>
+
+
+
+
+
+	<li id="comment-2296" class="class_comment1">
+	<p>I would like to see the middle namespace disappear in examples like
+YAHOO.util.Dom but I think it is worthwhile keeping YAHOO.Dom and not
+dropping the Dom.</p>
+	<p class="alignright"><small>Comment by peter michaux — June 24, 2006 <a href="#comment-2296">#</a> </small></p>
+	</li>
+
+
+
+
+
+	<li id="comment-3051" class="class_comment2">
+	<p>[...] Reasons why this sucks: 1) it’s ugly, and 2) it makes the code
+ much less portable, because whoever adapts it will have to ferret out
+every instance of MINDSACK.foo and substitute his own namespace. I was
+just about to punt the whole namespacing idea, until I ran across
+another post by Mr. Diaz, this one a reply to Douglas Crockford’s Global
+ Domination article on the YUIblog: Typically when working with YUI
+utils I like to set up the following shortcuts in my own private scope
+of my applications: [...]</p>
+	<p class="alignright"><small>Pingback by <a href="http://www.mindsack.com/?p=57" rel="external nofollow" class="url">Mindsack » Blog Archive » Hacking Scope in Javascript</a> — July 7, 2006 <a href="#comment-3051">#</a> </small></p>
+	</li>
+
+
+
+
+
+	<li id="comment-44954" class="class_comment1">
+	<p>&gt; Ideally, an application, library, component, or widget defines only a single global variable.</p>
+<p>Agreed, but how does it define the global variable?</p>
+<p>1: var YAHOO = {};<br>
+2: YAHOO = {};<br>
+3: window.YAHOO = {};<br>
+4: self.YAHOO = {};</p>
+<p>I think #2 is the best way, but what is the reason for using #1 in YUI?</p>
+	<p class="alignright"><small>Comment by <a href="http://www.mondotondo.com/aercolino/noteslog/" rel="external nofollow" class="url">Andrea Ercolino</a> — February 7, 2007 <a href="#comment-44954">#</a> </small></p>
+	</li>
+
+
+
+
+
+	<li id="comment-45762" class="class_comment2">
+	<p>I like #1 because it doesn’t look like an accident. I don’t like
+JavaScript’s implied global policy; I think it was a mistake. So I like
+all declarations, including global declarations, to be explicit.</p>
+	<p class="alignright"><small>Comment by <a href="http://javascript.crockford.com/" rel="external nofollow" class="url">Douglas Crockford</a> — February 9, 2007 <a href="#comment-45762">#</a> </small></p>
+	</li>
+
+
+
+
+
+	<li id="comment-45938" class="class_comment1">
+	<p>OK, but if I document it, then anyone can see it’s intentional:<br>
+<code><br>
+YAHOO = {}; //implied global<br>
+</code><br>
+—</p>
+<p>I think the YAHOO’s declaration can be improved:<br>
+<code><br>
+switch( typeof YAHOO ) {<br>
+	case "undefined":<br>
+		var YAHOO = {};<br>
+		break;<br>
+	default:<br>
+		YAHOO = {}; //a proper re-definition<br>
+}<br>
+</code></p>
+	<p class="alignright"><small>Comment by <a href="http://www.mondotondo.com/aercolino/noteslog/" rel="external nofollow" class="url">Andrea Ercolino</a> — February 9, 2007 <a href="#comment-45938">#</a> </small></p>
+	</li>
+
+
+
+
+
+	<li id="comment-139717" class="class_comment2">
+	<p>[...] Global variables are evil. Within YUI, we use only two
+globals: YAHOO and YAHOO_config. Everthing in YUI makes use of members
+within the YAHOO object hierarchy or variables that are scoped to such a
+ member. We advise that you exercise similar discipline in your own
+applications, too. [...]</p>
+	<p class="alignright"><small>Pingback by <a href="http://yuiblog.com/blog/2007/06/12/module-pattern/" rel="external nofollow" class="url">A JavaScript Module Pattern » Yahoo! User Interface Blog</a> — June 12, 2007 <a href="#comment-139717">#</a> </small></p>
+	</li>
+
+
+
+
+
+	<li id="comment-171542" class="class_comment1">
+	<p>[...] (When in doubt, wrap it in a closure. Global variables are evil.) [...]</p>
+	<p class="alignright"><small>Pingback by <a href="http://foohack.com/2007/08/yui-crockford-module-pattern-vs-prototypes-class-function/" rel="external nofollow" class="url">Foo Hack » YUI’s “Module Pattern” vs. Prototype’s Class Function</a> — August 13, 2007 <a href="#comment-171542">#</a> </small></p>
+	</li>
+
+
+
+
+
+	<li id="comment-172114" class="class_comment2">
+	<p>[...] doesn’t obfuscate global symbols, and 2) you won’t pollute the global object (see this great article by Douglas [...]</p>
+	<p class="alignright"><small>Pingback by <a href="http://www.julienlecomte.net/blog/2007/08/13/introducing-the-yui-compressor/" rel="external nofollow" class="url">Julien Lecomte’s Blog » Introducing the YUI Compressor</a> — August 14, 2007 <a href="#comment-172114">#</a> </small></p>
+	</li>
+
+
+
+
+
+	<li id="comment-180825" class="class_comment1">
+	<p>[...] Global Domination, an article written by Douglas Crockford [...]</p>
+	<p class="alignright"><small>Pingback by <a href="http://www.zachleat.com/web/2007/08/28/namespacing-outside-of-the-yahoo-namespace/" rel="external nofollow" class="url">zachleat.com {web} » Namespacing outside of the YAHOO Namespace</a> — August 28, 2007 <a href="#comment-180825">#</a> </small></p>
+	</li>
+
+
+
+
+
+	<li id="comment-294549" class="class_comment2">
+	<p>&gt;&gt;OK, but if I document it, then anyone can see it’s intentional:</p>
+<p>Comments are not durable. I’ve known programmers who strip all
+comments upon opening a source file. The justification they give?
+“Comments are always wrong.” My translation of that is that code can be
+changed without changing the comments, so the comments don’t necessarily
+ apply to the code that you see.</p>
+<p>Making the code clear enough that it doesn’t need comments is the best way to go.</p>
+	<p class="alignright"><small>Comment by timothy — January 31, 2008 <a href="#comment-294549">#</a> </small></p>
+	</li>
+
+
+
+
+
+	<li id="comment-302154" class="class_comment1">
+	<p>[...]
+??????????JavaScript???????????????????JavaScript????????????????window?
+???????????????????????????????????????????????????????????????????????
+?? [...]</p>
+	<p class="alignright"><small>Pingback by <a href="http://www.turen007.com/dig/archives/224" rel="external nofollow" class="url">Vayn???? » ??jQuery</a> — February 10, 2008 <a href="#comment-302154">#</a> </small></p>
+	</li>
+
+
+
+
+
+	<li id="comment-364802" class="class_comment2">
+	<p>[...] to use namespaces when writing your JavaScript. The reasons
+why have been stated time and again by much smarter and more eloquent
+people than myself, so suffice it to say, you should do [...]</p>
+	<p class="alignright"><small>Pingback by <a href="http://lucassmith.name/?p=122" rel="external nofollow" class="url">Dr. Prolix » Blog Archive » Enliven your namespaces</a> — May 1, 2008 <a href="#comment-364802">#</a> </small></p>
+	</li>
+
+
+
+
+
+	<li id="comment-581752" class="class_comment1">
+	<p>[...] call functions that are within the global namespace, and I try
+ to avoid anything global for all the well-documented reasons.&nbsp; I
+thought about using call() to change the invocation context, but
+setTimeout.call(object) will [...]</p>
+	<p class="alignright"><small>Pingback by <a href="http://fisherwebdev.com/wordpress/?p=14" rel="external nofollow" class="url">Scope issues with the callback to JQuery’s animate() function « sometimes infinity is a loop</a> — June 8, 2009 <a href="#comment-581752">#</a> </small></p>
+	</li>
+
+
+
+
+
+	<li id="comment-593044" class="class_comment2">
+	<p>The code sections are brilliantly elegant. Does the shortcut method actually make it faster or slower?</p>
+	<p class="alignright"><small>Comment by <a href="http://www.ferretscare.org/" rel="external nofollow" class="url">Rob</a> — July 29, 2010 <a href="#comment-593044">#</a> </small></p>
+	</li>
+
+
+
+
+
+	<li id="comment-593093" class="class_comment1">
+	<p>Any idea if it is faster or slower? I might be a little inpatient, just wondering, thanks guys.</p>
+	<p class="alignright"><small>Comment by <a href="http://ferretscare.org/" rel="external nofollow" class="url">Rob</a> — August 1, 2010 <a href="#comment-593093">#</a> </small></p>
+	</li>
+
+
+
+
+
+	<li id="comment-593204" class="class_comment2">
+	<p>[...] the number would be stored into variable result. Such a
+variable would be in the global scope, which is not a good idea. Even
+worse, although value would be retrievable once stored, we wouldn’t know
+ when it [...]</p>
+	<p class="alignright"><small>Pingback by <a href="http://www.yuiblog.com/blog/2010/08/09/ask-satyam-yql-and-yui/" rel="external nofollow" class="url">Ask Satyam: Using YQL and YUI with YQLDataSource » Yahoo! User Interface Blog (YUIBlog)</a> — August 9, 2010 <a href="#comment-593204">#</a> </small></p>
+	</li>
+
+
+
+
+
+	<li id="comment-594437" class="class_comment1">
+	<p>Hey, this is great when we get authorities like yahoo trend setting
+it helps us in getting our smaller and maybe more stubborn people to
+start to listen, thanks for the help!</p>
+	<p class="alignright"><small>Comment by <a href="http://www.squidoo.com/simple-ferret-care" rel="external nofollow" class="url">Rob</a> — September 22, 2010 <a href="#comment-594437">#</a> </small></p>
+	</li>
+
+
+
+
+
+	<li id="comment-597255" class="class_comment2">
+	<p>[...] thing that is evi in JavaScriptl. So are global variables, as detailed in Douglas Crockford’s Global Domination [...]</p>
+	<p class="alignright"><small>Pingback by <a href="http://www.jameswiseman.com/blog/2011/01/17/jslint-a-guide-to-jslint-messages/" rel="external nofollow" class="url">JSLint – A Guide To JSLint Messages | James Wiseman</a> — January 19, 2011 <a href="#comment-597255">#</a> </small></p>
+	</li>
+
+
+
+
+
+	<li id="comment-597945" class="class_comment1">
+	<p>[...] your code with others. For more details please take a look at
+Douglas Crockford’s artical at Yahoo! User Interface Blog (YUIBlog).To
+fix this we can wrap our code with a namespace. For example:
+someNamespace = { lang : 'en', [...]</p>
+	<p class="alignright"><small>Pingback by <a href="http://dreamerslab.com/blog/en/hide-javascript-global-objects-with-jquery-secret-plugin/" rel="external nofollow" class="url">Hide your global objects with jQuery Secret plugin | DreamersLab</a> — April 5, 2011 <a href="#comment-597945">#</a> </small></p>
+	</li>
+</ol>
+</div>
+</div></body></html>

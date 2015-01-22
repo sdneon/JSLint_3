@@ -1,0 +1,250 @@
+
+<!-- saved from url=(0044)http://javascript.crockford.com/private.html -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<title>Private Members in JavaScript</title>
+<style>
+body {
+    font-family: Arial !important;
+}
+</style>
+</head>
+<body bgcolor="linen" style="margin: 8%;">
+<h1 align="center">Private Members in JavaScript</h1>
+
+<p></p>
+
+<p align="center"><a href="mailto:douglas@crockford.com"><font size="+1">Douglas
+Crockford</font></a><br>
+  <a href="http://www.crockford.com/" target="_top"><tt>www.crockford.com</tt></a></p>
+
+<p>&nbsp;</p>
+
+<p><a href="http://www.crockford.com/javascript">JavaScript</a> is <a href="http://www.crockford.com/javascript/javascript.html">the
+world's most misunderstood programming language</a>. Some believe
+that it lacks the property of <i>information hiding</i> because
+objects cannot have private instance variables and methods. But this
+is a misunderstanding. JavaScript objects can have private members.
+Here's how.</p>
+
+<h2>Objects</h2>
+
+<p>JavaScript is fundamentally about <i>objects</i>. Arrays are
+objects. Functions are objects. Objects are objects. So what are
+objects? Objects are collections of name-value pairs. The names are
+strings, and the values are strings, numbers, booleans, and objects
+(including arrays and functions). Objects are usually implemented as
+hashtables so values can be retrieved quickly.</p>
+
+<p>If a value is a function, we can consider it a <i>method</i>. When
+a method of an object is invoked, the <tt>this</tt> variable is set
+to the object. The method can then access the instance variables
+through the <tt>this</tt> variable.</p>
+
+<p>Objects can be produced by <i>constructors</i>, which are
+functions which initialize objects. Constructors provide the features
+that classes provide in other languages, including static variables
+and methods.</p>
+
+<h2>Public</h2>
+
+<p>The members of an object are all <i>public</i> members. Any
+function can access, modify, or delete those members, or add new
+members. There are two main ways of putting members in a new
+object:</p>
+
+<h3>In the constructor</h3>
+
+<p>This technique is usually used to initialize public instance
+variables. The constructor's <tt>this</tt> variable is used to add
+members to the object.</p>
+
+<blockquote><pre>function Container(param) {
+    this.member = param;
+}</pre></blockquote>
+
+<p>So, if we construct a new object</p>
+
+<blockquote><pre>var myContainer = new Container('abc');</pre></blockquote>
+
+<p>then <tt>myContainer.member</tt> contains <tt>'abc'</tt>.</p>
+
+<h3>In the prototype</h3>
+
+<p>This technique is usually used to add public methods. When a
+member is sought and it isn't found in the object itself, then it is
+taken from the object's constructor's <tt>prototype</tt> member. The
+prototype mechanism is used for inheritance. It also conserves
+memory. To add a method to all objects made by a constructor, add a
+function to the constructor's <tt>prototype</tt>:</p>
+
+<blockquote><pre>Container.prototype.stamp = function (string) {
+    return this.member + string;
+}</pre></blockquote>
+
+<p>So, we can invoke the method</p>
+
+<blockquote><pre>myContainer.stamp('def')</pre></blockquote>
+
+<p>which produces <tt>'abcdef'</tt>.</p>
+
+<h2>Private</h2>
+
+<p><i>Private</i> members are made by the constructor. Ordinary
+<tt>var</tt>s and parameters of the constructor becomes the private
+members.</p>
+
+<blockquote><pre>function Container(param) {
+    this.member = param;
+    var secret = 3;
+    var that = this;
+}</pre></blockquote>
+
+<p>This constructor makes three private instance variables:
+<tt>param</tt>, <tt>secret</tt>, and <tt>that</tt>. They are attached
+to the object, but they are not accessible to the outside, nor are
+they accessible to the object's own public methods. They are
+accessible to private methods. Private methods are inner functions of
+the constructor.</p>
+
+<blockquote>
+  <pre>function Container(param) {
+
+    function dec() {
+        if (secret &gt; 0) {
+            secret -= 1;
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    this.member = param;
+    var secret = 3;
+    var that = this;
+}</pre>
+</blockquote>
+
+<p>The private method <tt>dec</tt> examines the <tt>secret</tt>
+instance variable. If it is greater than zero, it decrements
+<tt>secret</tt> and returns <tt>true</tt>. Otherwise it returns
+<tt>false</tt>. It can be used to make this object limited to three
+uses.</p>
+
+<p>By convention, we make a private <tt>that</tt> variable. This is
+used to make the object available to the private methods. This is a
+workaround for an error in the ECMAScript Language Specification
+which causes <tt>this</tt> to be set incorrectly for inner
+functions.</p>
+
+<p>Private methods cannot be called by public methods. To make
+private methods useful, we need to introduce a privileged method.</p>
+
+<h2>Privileged</h2>
+
+<p>A <i>privileged</i> method is able to access the private variables
+and methods, and is itself accessible to the public methods and the
+outside. It is possible to delete or replace a privileged method, but
+it is not possible to alter it, or to force it to give up its
+secrets.</p>
+
+<p>Privileged methods are assigned with <tt>this</tt> within the
+constructor.</p>
+
+<blockquote>
+  <pre>function Container(param) {
+
+    function dec() {
+        if (secret &gt; 0) {
+            secret -= 1;
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    this.member = param;
+    var secret = 3;
+    var that = this;
+
+    this.service = function () {
+        return dec() ? that.member : null;
+    };
+}</pre>
+</blockquote>
+
+<p><tt>service</tt> is a privileged method. Calling
+<tt>myContainer.service()</tt> will return <tt>'abc'</tt> the first
+three times it is called. After that, it will return <tt>null</tt>.
+<tt>service</tt> calls the private <tt>dec</tt> method which accesses
+the private <tt>secret</tt> variable. <tt>service</tt> is available
+to other objects and methods, but it does not allow direct access to
+the private members.</p>
+
+<h2>Closures</h2>
+
+<p>This pattern of public, private, and privileged members is
+possible because JavaScript has <i>closures</i>. What this means is
+that an inner function always has access to the vars and parameters
+of its outer function, even after the outer function has returned.
+This is an extremely powerful property of the language. There is no
+book currently available on JavaScript programming that shows how to
+exploit it. Most don't even mention it.</p>
+
+<p>Private and privileged members can only be made when an object is
+constructed. Public members can be added at any time.</p>
+
+<h2>Patterns</h2>
+
+<h3>Public</h3>
+
+<blockquote><tt>function </tt><i>Constructor</i><tt>(</tt>...<tt>)
+   {</tt>
+
+   <blockquote><tt>this.</tt><i>membername</i><tt> =
+      </tt><i>value</i><tt>;</tt></blockquote>
+
+   <p>}<br>
+   <i>Constructor</i><tt>.prototype.</tt><i>membername</i><tt> =
+   </tt><i>value</i><tt>;</tt></p></blockquote>
+
+<h3>Private</h3>
+
+<blockquote><tt>function </tt><i>Constructor</i><tt>(</tt>...<tt>)
+   {</tt>
+
+
+  <blockquote><tt>var that = this;<br>
+      var </tt><i>membername</i><tt> = </tt><i>value</i><tt>;</tt>
+
+
+    <p><tt>function </tt><i>membername</i><tt>(</tt>...<tt>) {</tt>...<tt>}</tt></p>
+  </blockquote>
+  <p><tt>}</tt></p>
+  <p>Note: The function statement</p>
+  <blockquote>
+    <p><tt>function
+      </tt><i>membername</i><tt>(</tt>...<tt>) {</tt>...<tt>}</tt></p>
+  </blockquote>
+  <p>is shorthand for</p>
+  <blockquote>
+    <p><tt>var </tt><i>membername</i><tt> = function </tt><i>membername</i><tt>(</tt>...<tt>)
+    {</tt>...<tt>};</tt></p>
+  </blockquote>
+</blockquote>
+
+<h3>Privileged</h3>
+
+<blockquote><tt>function</tt> <i>Constructor</i><tt>(</tt>...<tt>)
+   {</tt>
+
+
+  <blockquote><tt>this.</tt><i>membername</i><tt> = function (</tt>...<tt>) {</tt>...<tt>};</tt></blockquote>
+
+   <p><tt>}</tt></p></blockquote>
+
+<p>Copyright 2001 <a href="mailto:douglas@crockford.com">Douglas
+Crockford.</a> <a href="http://www.crockford.com/">All
+Rights Reserved Wrrrldwide.</a></p>
+
+
+</body></html>

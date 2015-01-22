@@ -1,0 +1,1104 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"><head profile="http://gmpg.org/xfn/11">
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+	<title>with Statement Considered Harmful » Yahoo! User Interface Blog (YUIBlog)</title>
+<!-- 	<title>Yahoo! User Interface Blog (YUIBlog) &raquo; with Statement Considered Harmful</title> -->
+	 <meta http-equiv="Content-Encoding" content="gzip">
+<meta http-equiv="Accept-Encoding" content="gzip, deflate">
+	<meta name="generator" content="WordPress 3.0.4"> <!-- leave this for stats please -->
+<!--
+	<style type="text/css" media="screen">
+		@import url(http://www.yuiblog.com/blog/wp-content/themes/yuiblog_v1/style.css);
+	</style>
+-->
+<style>
+body {
+    font-family: Arial !important;
+}
+</style>
+</head>
+
+<body>
+<div id="content">
+
+	<div id="header" onclick="location.href='http://www.yuiblog.com/blog';" style="cursor: pointer;">
+		<h1><a href="http://www.yuiblog.com/blog">Yahoo! User Interface Blog (YUIBlog)</a></h1>
+	</div>
+
+<!-- end header -->
+	<div id="bloque">
+
+		<div id="noticias">
+
+		<!--don't suppress WP formatting-->
+			<div class="entrada">
+				<h2 id="post-22"><a href="http://www.yuiblog.com/blog/2006/04/11/with-statement-considered-harmful/" rel="bookmark" title="Permanent Link to with Statement Considered Harmful">with Statement Considered Harmful</a></h2>
+				<small>April 11, 2006 at 7:52 am by Douglas Crockford | In <a href="http://www.yuiblog.com/blog/category/development/" title="View all posts in Development" rel="category tag">Development</a> | <a href="#comments" title="Comment on with Statement Considered Harmful">64 Comments</a></small>
+
+			<p>JavaScript’s <code>with</code> statement was intended to provide a shorthand for writing recurring accesses to objects. So instead of writing</p>
+<blockquote>
+<pre>ooo.eee.oo.ah_ah.ting.tang.walla.walla.bing = true;
+ooo.eee.oo.ah_ah.ting.tang.walla.walla.bang = true;</pre>
+</blockquote>
+<p>You can write</p>
+<blockquote>
+<pre>with (ooo.eee.oo.ah_ah.ting.tang.walla.walla) {
+    bing = true;
+    bang = true;
+}</pre>
+</blockquote>
+<p>That looks a lot nicer. Except for one thing. There is no way that you can tell by looking at the code which <code>bing</code> and <code>bang</code> will get modifed. Will   <code>ooo.eee.oo.ah_ah.ting.tang.walla.walla</code> be modified? Or will the global variables <code>bing</code> and <code>bang</code> get clobbered? It is impossible to know for sure.</p>
+<p>The <code>with</code> statement adds the members of an object to the current scope. Only if there is a <code>bing</code> in <code>ooo.eee.oo.ah_ah.ting.tang.walla.walla</code> will <code>ooo.eee.oo.ah_ah.ting.tang.walla.walla.bing</code> be accessed. </p>
+<p>If you can’t read a program and be confident that you know what it is
+ going to do, you can’t have confidence that it is going to work
+correctly. For this reason, the <code>with</code> statement should be avoided.</p>
+<p>Fortunately, JavaScript also provides a better alternative. We can simply define a <code>var</code>.</p>
+<blockquote>
+<pre>var o = ooo.eee.oo.ah_ah.ting.tang.walla.walla;
+o.bing = true;
+o.bang = true;
+</pre>
+</blockquote>
+<p>Now there is no ambiguity. We can have confidence that it is <code>ooo.eee.oo.ah_ah.ting.tang.walla.walla.bing</code> and <code>ooo.eee.oo.ah_ah.ting.tang.walla.walla.bang</code> that are being set, and not some hapless variables. </p>
+</div>
+
+
+
+<h2 id="comments">64 Comments
+</h2>
+
+
+<p>
+
+</p>
+
+<ol id="commentlist">
+
+
+
+	<li id="comment-616" class="class_comment1">
+	<p>Thanks for publishing this useful piece of advice, as it should be known by all JS developers.</p>
+<p>Maybe you’ll consider a similar analysis and discussion of the proper uses of the <code>eval()</code> function. [<a href="http://xkr.us/js/eval" rel="nofollow"><code>eval()</code> considerations</a>].</p>
+	<p class="alignright"><small>Comment by <a href="http://h3h.net/" rel="external nofollow" class="url">Brad Fults</a> — April 11, 2006 <a href="#comment-616">#</a> </small></p>
+	</li>
+
+
+
+
+
+	<li id="comment-620" class="class_comment2">
+	<p>I would really love syntax like</p>
+<p><code><br>
+with (ooo.eee.oo.ah_ah.ting.tang.walla.walla as o) {<br>
+    o.bing = true;<br>
+    bang = true;<br>
+}<br>
+</code></p>
+<p>so you know</p>
+<p><code>ooo.eee.oo.ah_ah.ting.tang.walla.walla.bing</code> </p>
+<p>and the global variable <code>bang</code> are set to <code>true</code>.</p>
+<p>Just like for example the <code>foreach</code> construct in PHP.</p>
+<p><code><br>
+$numbers = array(1, 1, 2, 3, 5, 8, 13);<br>
+foreach ($numbers as $number)<br>
+  print $number.' ';<br>
+</code></p>
+	<p class="alignright"><small>Comment by Frans — April 11, 2006 <a href="#comment-620">#</a> </small></p>
+	</li>
+
+
+
+
+
+	<li id="comment-621" class="class_comment1">
+	<p>[...] On the Yahoo! user interface blog I just saw their post “with Statement Considered Harmful“. Good advice. [...]</p>
+	<p class="alignright"><small>Pingback by <a href="http://www.barelyfitz.com/blog/archives/2006/04/11/328/" rel="external nofollow" class="url">BarelyBlogging » Blog Archive » Three more things you should not do in JavaScript</a> — April 11, 2006 <a href="#comment-621">#</a> </small></p>
+	</li>
+
+
+
+
+
+	<li id="comment-622" class="class_comment2">
+	<p>This has to be one of the most entertaining code examples ever.
+Thanks for sharing it in such an understandable / pallettable way.</p>
+	<p class="alignright"><small>Comment by <a href="http://sonspring.com/" rel="external nofollow" class="url">Nathan Smith</a> — April 11, 2006 <a href="#comment-622">#</a> </small></p>
+	</li>
+
+
+
+
+
+	<li id="comment-627" class="class_comment1">
+	<p>I’m pretty sure the “var” solution is faster too – “with” expands
+the overall namespace and with JS being dynamic, the walla.walla object
+will have to be checked upon each variable reference to see if it has a
+“bang” or a “bing”, ne?</p>
+	<p class="alignright"><small>Comment by <a href="http://ajaxpatterns.org/" rel="external nofollow" class="url">Michael Mahemoff</a> — April 11, 2006 <a href="#comment-627">#</a> </small></p>
+	</li>
+
+
+
+
+
+	<li id="comment-631" class="class_comment2">
+	<p>Frans,</p>
+<p>Your suggested syntax is not really much different than the “better
+alternative” suggested by Doug.  Personally, I’ve forgotten that “with”
+even exists and just use this technique.</p>
+<p>And I agree, this was a fun code example…</p>
+<p>Jeff</p>
+	<p class="alignright"><small>Comment by <a href="http://blog.codedread.com/" rel="external nofollow" class="url">Jeff Schiller</a> — April 12, 2006 <a href="#comment-631">#</a> </small></p>
+	</li>
+
+
+
+
+
+	<li id="comment-634" class="class_comment1">
+	<p>how about:<br>
+function (o) {<br>
+  o.bing = true;<br>
+  bang = true;<br>
+}(ooo.eee.oo.ah_ah.ting.tang.walla.walla);</p>
+	<p class="alignright"><small>Comment by Ron — April 12, 2006 <a href="#comment-634">#</a> </small></p>
+	</li>
+
+
+
+
+
+	<li id="comment-641" class="class_comment2">
+	<p><strong>[JavaScript] “With” Statement Considered Harmful…</strong></p>
+<p>[via qwghlm.co.uk] Over at Yahoo’s User Interface Blog, JavaScript
+guru Douglas Crockford shows that using JavaScript’s with statement, a
+bit of syntactic sugar meant to save time and typing, isn’t such a good
+idea. He points out that in the code</p>
+<p>…</p>
+	<p class="alignright"><small>Trackback by <a href="http://farm.tucows.com/blog/_archives/2006/4/13/1883829.html" rel="external nofollow" class="url">Tucows Farm: The Tucows Developers' Hangout</a> — April 13, 2006 <a href="#comment-641">#</a> </small></p>
+	</li>
+
+
+
+
+
+	<li id="comment-669" class="class_comment1">
+	<p>Too bad that Javascript doesn’t use some prefix such as “@” to specify member variables in a <code>with</code> statement.  eg. <code>with (ooo.eee.oo.ah_ah.ting.tang.walla.walla) {<br>
+    @bing = true;<br>
+    @bang = true;<br>
+}</code></p>
+<p>Something along those lines would make the statement pretty useful still.</p>
+	<p class="alignright"><small>Comment by <a href="http://josh-peters.name/blog" rel="external nofollow" class="url">Josh Peters</a> — April 15, 2006 <a href="#comment-669">#</a> </small></p>
+	</li>
+
+
+
+
+
+	<li id="comment-698" class="class_comment2">
+	<p>Using sensible variable names would probably help a lot more.</p>
+<p>Something along the lines of:</p>
+<p>with(My.Utils) {<br>
+    addEvent(…);<br>
+    var z = append(x, y);<br>
+}</p>
+<p>is pretty acceptable in my opinion and better than most languages import/using statements because it’s scoped.</p>
+	<p class="alignright"><small>Comment by Daniel — April 18, 2006 <a href="#comment-698">#</a> </small></p>
+	</li>
+
+
+
+
+
+	<li id="comment-720" class="class_comment1">
+	<p>Something along the lines of:</p>
+<p>with(My.Utils) {<br>
+addEvent(…);<br>
+var z = append(x, y);<br>
+}</p>
+<p>Has 16 possible interpretations. It might mean</p>
+<p>var w = My.Utils;<br>
+w.addEvent(…);<br>
+var z = append(w.x, w.y);</p>
+<p>or it could mean</p>
+<p>var w = My.Utils;<br>
+w.addEvent(…);<br>
+var z = w.append(x, y);</p>
+<p>or one of 14 others. I can’t read something along these lines and
+have confidence that I know what it is doing. How can I have confidence
+that it is correct?</p>
+	<p class="alignright"><small>Comment by <a href="http://javascript.crockford.com/" rel="external nofollow" class="url">Douglas Crockford</a> — April 20, 2006 <a href="#comment-720">#</a> </small></p>
+	</li>
+
+
+
+
+
+	<li id="comment-731" class="class_comment2">
+	<p>Because you’ve used sensible variable names….</p>
+<p>If you’ve got a variable called ‘My.Utils.x’ you’ve got bigger problems than the ‘with’ statment.</p>
+<p>Which just leaves the possibility that addEvent and append might be
+in either My.Utils or your current namespace. But why does that matter?
+Are you in the habbit of creating multiple addEvent functions with
+contradictory semantics? If so, I hope you’re not putting them in the
+global scope.</p>
+<p>If you think about it, the code I posted has much more than 16 variations. And will if you use ‘with’ or not.</p>
+	<p class="alignright"><small>Comment by Daniel — April 21, 2006 <a href="#comment-731">#</a> </small></p>
+	</li>
+
+
+
+
+
+	<li id="comment-799" class="class_comment1">
+	<p>Consider also this note found at Core Javascript Reference 1.5 by Netscape: </p>
+<p>“Note that using a ‘with’ statement will significantly slow down your code. Do not use it when performance is critical.”</p>
+<p>I know things have changed and Firefox now includes a new version of
+JS and maybe IE doesn’t have this problem at all. But I tend to keep it
+in mind.</p>
+	<p class="alignright"><small>Comment by Daniel Fernandez — April 26, 2006 <a href="#comment-799">#</a> </small></p>
+	</li>
+
+
+
+
+
+	<li id="comment-1685" class="class_comment2">
+	<p>[...] Generally a shallow tree is better than a deep tree. One could
+ imagine that  YAHOO.util.Dom.get  could have been factored more
+compactly perhaps as  YAHOO.get  . And perhaps someday it will, but for
+now  YAHOO.util.Dom.get  is not measurably slower, and it is helping
+Yahoo to manage its evolving codebase. (And if you don’t like the
+length, you only have to type it once. See   with  Statement Considered
+Harmful  .) [...]</p>
+	<p class="alignright"><small>Pingback by <a href="http://yuiblog.com/blog/2006/06/01/global-domination/" rel="external nofollow" class="url">Global Domination » Yahoo! User Interface Blog</a> — June 1, 2006 <a href="#comment-1685">#</a> </small></p>
+	</li>
+
+
+
+
+
+	<li id="comment-2617" class="class_comment1">
+	<p>Ron – Although your method is pretty, I don’t think it is very
+efficient.  To execute your code, the javascript interpreter has to push
+ something onto the call stack, where as setting a local variable works
+within an already existing stack.</p>
+	<p class="alignright"><small>Comment by Taylor — June 30, 2006 <a href="#comment-2617">#</a> </small></p>
+	</li>
+
+
+
+
+
+	<li id="comment-4928" class="class_comment2">
+	<p>I knew that headline was <a href="http://en.wikipedia.org/wiki/Considered_harmful" rel="nofollow">familiar</a></p>
+	<p class="alignright"><small>Comment by rymo — August 13, 2006 <a href="#comment-4928">#</a> </small></p>
+	</li>
+
+
+
+
+
+	<li id="comment-8637" class="class_comment1">
+	<p>Couple comments:<br>
+1.  Scope chaining is not something that is only introduced by the
+“with” statement. Closures do the same exact thing.  Any time a function
+ is declared a new scope variable is created and it is nested into or
+chained to the existing scope.  This is basically the same thing that
+the with statement is doing. Confusion created by these nested scopes
+can certainly occur with nested closures. This is a core aspect of
+JavaScript, and I don’t believe it really a great reason to drop “with”
+usage altogether. The main reason that with statement can create more
+confusion is that the properties of the object that we are going to do
+the “with” can and often are set elsewhere, whereas the properties of
+the current scope are always visible in the immediate code.  However, it
+ is certainly possible that code may be structured in such a way that
+the properties of the “with” object are apparent in the code.<br>
+2.  Scope chaining used properly can acheive performance enhancement as
+well degradation.  Whenever the JS machine encounters a symbol it must
+go through the scope chain to do a lookup. If you are referencing a
+global variable (or any variable not in the top scope, that is the
+target of the “with” statement), a deeper scope chain will take more
+time to do a lookup, and this is where performance degradation can be
+caused by the with statement.  However if we consider Douglas’s example,
+ when JS machine encounters o.bing, it must first do a lookup in the
+current scope for “o” and then it must do a lookup in the o object for
+“bing”, so it must do two lookups.  However, if the with statement is
+used, there only needs to be one lookup, that is against the current top
+ scope object. I believe that adding another scope on to the scope stack
+ is not a very expensive operation.  With these considerations, I
+believe that code that requires performance tuning (there are situations
+ where code is used heavily enough that performance is more important
+than readability) may benefit from the “with” statement.  Has anyone
+done any performance tests on the “with” statement (I am curious if my
+assertions are correct).</p>
+	<p class="alignright"><small>Comment by <a href="http://www.authenteo.com/" rel="external nofollow" class="url">Kris Zyp</a> — September 26, 2006 <a href="#comment-8637">#</a> </small></p>
+	</li>
+
+
+
+
+
+	<li id="comment-12572" class="class_comment2">
+	<p>i = new JS_user ;D , so just a wild thought…</p>
+<p>What about:</p>
+<p>with (ooo.eee.oo.ah_ah.ting.tang.walla) {<br>
+    walla.bing = true;<br>
+}</p>
+<p>or…</p>
+<p>with (o = ooo.eee.oo.ah_ah.ting.tang.walla.walla) {<br>
+    o.bing = true;<br>
+}</p>
+	<p class="alignright"><small>Comment by ec — October 31, 2006 <a href="#comment-12572">#</a> </small></p>
+	</li>
+
+
+
+
+
+	<li id="comment-12625" class="class_comment1">
+	<p>Why do you want to be posting stuff which is wrong?</p>
+	<p class="alignright"><small>Comment by <a href="http://360.yahoo.com/douglascrockford" rel="external nofollow" class="url">Douglas Crockford</a> — October 31, 2006 <a href="#comment-12625">#</a> </small></p>
+	</li>
+
+
+
+
+
+	<li id="comment-14949" class="class_comment2">
+	<p>The with statement used with an object literal can be a very handy
+way to assign static variables with less overhead (and thus better
+performance) than a closure.  Using an object literal and with statement
+ in this manner does not open the door to uncertainties, and is
+conceptually similar to the “let” statement in Javascript 2.</p>
+<p>For example, if I write YAHOO.util.Dom and YAHOO.util.Event 57 times
+each in some program, then I can save quite a few bytes (and a lot of
+typing) by doing this:</p>
+<p>with ({<br>
+        Dom:YAHOO.util.Dom,<br>
+        Event:YAHOO.util.Event<br>
+    }) {</p>
+<p>// my program here…</p>
+<p>}</p>
+<p>This assigns a reference to “YAHOO.util.Dom” to the “Dom” variable, without polluting the global scope.</p>
+	<p class="alignright"><small>Comment by <a href="http://games.yahoo.com/" rel="external nofollow" class="url">Isaac Z. Schlueter</a> — November 12, 2006 <a href="#comment-14949">#</a> </small></p>
+	</li>
+
+
+
+
+
+	<li id="comment-31443" class="class_comment1">
+	<p>[...] Normally, the with statement is a pretty bad idea. However,
+when used with an object literal, it can be a very handy way to create
+private variables. This: [...]</p>
+	<p class="alignright"><small>Pingback by <a href="http://isaacschlueter.com/2007/01/lessons-in-javascript-optimization/" rel="external nofollow" class="url">Schlueterica » Lessons in Javascript Optimization</a> — January 12, 2007 <a href="#comment-31443">#</a> </small></p>
+	</li>
+
+
+
+
+
+	<li id="comment-31477" class="class_comment2">
+	<p>You don’t need with there, either. It is better to use vars in a
+function. If you want something trickier just to be tricker, try this:</p>
+<p>    (function (Dom, Event) {</p>
+<p>        // my program here…</p>
+<p>    }) (YAHOO.util.Dom, YAHOO.util.Event);</p>
+	<p class="alignright"><small>Comment by <a href="http://javascript.crockford.com/" rel="external nofollow" class="url">Douglas Crockford</a> — January 12, 2007 <a href="#comment-31477">#</a> </small></p>
+	</li>
+
+
+
+
+
+	<li id="comment-114652" class="class_comment1">
+	<p>[...] they encourage weak coding patterns. JavaScript has more than
+its share of attractive nuisances (with, implied globals, new, and
+semicolon insertion, to name a few). Your programs will be stronger if
+[...]</p>
+	<p class="alignright"><small>Pingback by <a href="http://yuiblog.com/blog/2007/04/25/id-rather-switch-than-fight/" rel="external nofollow" class="url">I’d Rather switch Than Fight! » Yahoo! User Interface Blog</a> — May 14, 2007 <a href="#comment-114652">#</a> </small></p>
+	</li>
+
+
+
+
+
+	<li id="comment-125883" class="class_comment2">
+	<p>Douglas, explain the advantage of using your suggestion of:</p>
+<p>(function (Dom, Event) {</p>
+<p>// my program here…</p>
+<p>}) (YAHOO.util.Dom, YAHOO.util.Event);</p>
+<p>over Isaac’s suggestion of:</p>
+<p>with ({<br>
+Dom:YAHOO.util.Dom,<br>
+Event:YAHOO.util.Event<br>
+}) {</p>
+<p>// my program here…</p>
+<p>}</p>
+<p>They appear functionally and semantically equivalent.</p>
+	<p class="alignright"><small>Comment by Seth Flowers — May 24, 2007 <a href="#comment-125883">#</a> </small></p>
+	</li>
+
+
+
+
+
+	<li id="comment-137198" class="class_comment1">
+	<p>Mr. Crockford, you propose a new snippet in your last comment, which is equivalent to :</p>
+<p>(function () {<br>
+    var o = …<br>
+    o.foo  = …<br>
+    o.bar = …<br>
+})();</p>
+<p>Thank you for posting it, I was missing the parens around the
+function statement when I came up with it, and without them the snippet
+does not work. (I wonder why, actually ?)</p>
+<p>However you call that snippet “tricky”. Did you mean to be
+disparaging, or was it irony ? Because it seems to me that it is the
+ideal way of implementing your suggestion from the article without
+polluting the global namespace with the temporary shortcut variables.</p>
+	<p class="alignright"><small>Comment by <a href="http://www.cfdlabs.com/" rel="external nofollow" class="url">David Holmes</a> — June 7, 2007 <a href="#comment-137198">#</a> </small></p>
+	</li>
+
+
+
+
+
+	<li id="comment-144116" class="class_comment2">
+	<p>Responding to myself, to save anyone else the trouble :</p>
+<p>I have come to the realization that the above pattern is indeed very
+common. One can encounter it in the YUI code for example, and I have
+seen it called a “Crockford Module pattern”.</p>
+<p>So, tricky, but very useful !</p>
+	<p class="alignright"><small>Comment by <a href="http://www.cfdlabs.com/" rel="external nofollow" class="url">David Holmes</a> — June 21, 2007 <a href="#comment-144116">#</a> </small></p>
+	</li>
+
+
+
+
+
+	<li id="comment-151412" class="class_comment1">
+	<p>[...] ?? ??? ?????? ? ??????. ?? ??? ??? ?? ????? ???????? ?????? ?? YUI-?????, ??????? ? ???????? [...]</p>
+	<p class="alignright"><small>Pingback by <a href="http://blog.web2.com.ua/2007/07/03/zlo-with/" rel="external nofollow" class="url">.wpal » Blog Archives » ??? with</a> — July 3, 2007 <a href="#comment-151412">#</a> </small></p>
+	</li>
+
+
+
+
+
+	<li id="comment-159545" class="class_comment2">
+	<p>[...] C++, porém o estilo Pascal não é recomendado, por causa da
+natureza dinâmica da linguagem (with-statement-considered-harmful). Como
+ propriedades podem ser adicionadas livremente aos objetos e variáveis
+globais podem ser [...]</p>
+	<p class="alignright"><small>Pingback by <a href="http://marcuscf.wordpress.com/2007/07/20/o-with-em-linguagens-de-programacao/" rel="external nofollow" class="url">O “with” em linguagens de programação « blog</a> — July 20, 2007 <a href="#comment-159545">#</a> </small></p>
+	</li>
+
+
+
+
+
+	<li id="comment-302591" class="class_comment1">
+	<p>[...] with statement is another that is often recommended to avoid
+in JavaScript. For YUI Compressor, the reason is the same for eval():
+just the presence of with in a function [...]</p>
+	<p class="alignright"><small>Pingback by <a href="http://yuiblog.com/blog/2008/02/11/helping-the-yui-compressor/" rel="external nofollow" class="url">Helping the YUI Compressor » Yahoo! User Interface Blog</a> — February 11, 2008 <a href="#comment-302591">#</a> </small></p>
+	</li>
+
+
+
+
+
+	<li id="comment-364807" class="class_comment2">
+	<p>This also works:</p>
+<p><code><br>
+with ({o:ooo.eee.oo.ah_ah.ting.tang.walla.walla})<br>
+{<br>
+  o.bing = true;<br>
+  o.bang = true;<br>
+}<br>
+</code><br>
+but reads a little nicer and limits the scope of ‘o’.</p>
+	<p class="alignright"><small>Comment by <a href="http://www.peerbox.com:8668/space/start" rel="external nofollow" class="url">Kevin Greer</a> — May 1, 2008 <a href="#comment-364807">#</a> </small></p>
+	</li>
+
+
+
+
+
+	<li id="comment-371764" class="class_comment1">
+	<p>I kind of like Kevin Greer’s <a href="#comment-364807" rel="nofollow">last addition</a>, though here’s a variation I’ve not seen commented here yet:</p>
+<p><code><br>
+{<br>
+  var o = ooo.eee.oo.ah_ah.ting.tang.walla.walla;<br>
+  o.bing = true;<br>
+  o.bang = true;<br>
+}<br>
+</code></p>
+<p>This limits the scope of “o” while not changing “this” or restricting
+ access to parent/global variables.  Also very, very minor, but this
+method also involves one less object being created.</p>
+	<p class="alignright"><small>Comment by <a href="http://www.ziesemer.com/" rel="external nofollow" class="url">Mark A. Ziesemer</a> — May 12, 2008 <a href="#comment-371764">#</a> </small></p>
+	</li>
+
+
+
+
+
+	<li id="comment-371888" class="class_comment2">
+	<p>JavaScript does not have block scope, so Mark’s example lacks any benefit. Kevin’s example is larger and slower and wrong.</p>
+	<p class="alignright"><small>Comment by <a href="http://javascript.crockford.com/" rel="external nofollow" class="url">Douglas Crockford</a> — May 13, 2008 <a href="#comment-371888">#</a> </small></p>
+	</li>
+
+
+
+
+
+	<li id="comment-376820" class="class_comment1">
+	<p>Yes, I realized I was incorrect shortly after I posted.  Mr.
+Crockford is completely correct – JavaScript does hot have block scope.</p>
+<p>However, I don’t see how the example referenced by Isaac, Seth, and
+Kevin is larger or slower, and I definitely have a difficult time
+realizing how it is “wrong”.</p>
+<p>It definitely works, as well as appearing to solve the concerns addressed in the original post.</p>
+<p>It additionally has the benefit of readability by declaring the
+variables and values before the code block, rather than after.  It also
+pairs the variables names and assigned values together, rather than
+splitting the variables beforehand and the values after, making the
+orders significant.</p>
+	<p class="alignright"><small>Comment by <a href="http://www.ziesemer.com/" rel="external nofollow" class="url">Mark A. Ziesemer</a> — May 19, 2008 <a href="#comment-376820">#</a> </small></p>
+	</li>
+
+
+
+
+
+	<li id="comment-475991" class="class_comment2">
+	<p>AS A RULE, Objects must be predefined in JScript and javascript, or the code breaks altogether…</p>
+<p>Hence,–</p>
+<p>with(coconut.lime = new Object) lime=true // should work</p>
+<p>cf for predefined parent.object,<br>
+ with(parent) parent.object works too: as well as object works … reduplication doesn’t bother it.</p>
+	<p class="alignright"><small>Comment by Mr. Raymond Kenneth Petry — September 22, 2008 <a href="#comment-475991">#</a> </small></p>
+	</li>
+
+
+
+
+
+	<li id="comment-527347" class="class_comment1">
+	<p>Hmm, I seem to remember reading about the following syntax (dunno what version/flavor of Javascript it can be used with though):</p>
+<p>let ovlin=object.with.very.long.irritating.name;</p>
+<p>ovlin.bing=”bada”;</p>
+<p>“let” being like “var” except it is a kind of “reference” rather than
+ crating a new local variable. I’m unsure about the exact differences
+between using var and let, especially in a language such as Javascript –
+ However, I assume it is more efficient to use let in certain
+situations?</p>
+	<p class="alignright"><small>Comment by Privacy Lover — December 5, 2008 <a href="#comment-527347">#</a> </small></p>
+	</li>
+
+
+
+
+
+	<li id="comment-528713" class="class_comment2">
+	<p>JavaScript looks for variable names in a hierarchy manner.</p>
+<p>so</p>
+<p>var obj = { a: 5, b: 6 };<br>
+var a = ‘a’, b = ‘b’;</p>
+<p>with(obj) {<br>
+  log(a + ‘ ‘ + b); // 5 6<br>
+}</p>
+<p>it will check if the “parent” scope has these variables and then check it’s parent etc…</p>
+<p>but again it also goes back to the javascript engine. I tested it with Firefox 3</p>
+<p>and also again if you want to use a javascript compressor then it might be tough.<br>
+yesterday I started using them and I found that the YUI Compressor does handle it well.</p>
+<p>I myself have never used with</p>
+	<p class="alignright"><small>Comment by <a href="http://www.samerziadeh.com/" rel="external nofollow" class="url">Samer Ziadeh</a> — December 10, 2008 <a href="#comment-528713">#</a> </small></p>
+	</li>
+
+
+
+
+
+	<li id="comment-581738" class="class_comment1">
+	<p>/*<br>
+You should Never use the with statement like this, NEVER use with(){} to asign values to an object using the = operator.</p>
+<p>However it works excellently as a using statement for library namespaces, for example:<br>
+*/</p>
+<p>//library definition:<br>
+var mysuperawsomelib={<br>
+  somenamespace:{<br>
+    libfunk:function(){},<br>
+    dosomethingfunky:function(){}<br>
+  },<br>
+  somestring:’w00t!’<br>
+};</p>
+<p>//usage:<br>
+with(mysuperawsomelib.somenamespace){<br>
+  dosomethingfunky();<br>
+  libfunk();<br>
+};</p>
+<p>//never do:<br>
+with(mysuperawsomelib){<br>
+  somestring=’changedstring’;<br>
+}</p>
+<p>/*<br>
+because if for some reason mysuperawsomelib.somestring does not exist,
+window.somestring=’changedstring’; happens instead, and you now have a
+global variable called somestring. So Never use with(){} to assign
+properties to objects, Only use it like a using statement for libraries.<br>
+*/</p>
+<p>//This is the worst use for with(){} I’ve seen:<br>
+with(document.getElementById(“mydiv”).style){<br>
+  position=’absolute’;<br>
+  top=234+’px’;<br>
+  left=475+’px’;<br>
+}<br>
+/*<br>
+NEVER do this, because if it doesn’t have a position or top or left
+property already assigned, it will asign it to the global variable
+window, instead of mydiv.style…. It may also work differently in
+different browsers…<br>
+*/</p>
+	<p class="alignright"><small>Comment by Brian Van — June 7, 2009 <a href="#comment-581738">#</a> </small></p>
+	</li>
+
+
+
+
+
+	<li id="comment-581868" class="class_comment2">
+	<p>[...] to YAHOO.tool so I don’t have to include the package name for
+each Object instance (it is considered harmful though). Now I switch
+over to firefox, open up the page and [...]</p>
+	<p class="alignright"><small>Pingback by <a href="http://blog.james-carr.org/2009/06/18/javascript-test-driven-development-with-yui-test/" rel="external nofollow" class="url">James Carr » Blog Archive » Javascript Test Driven Development With YUI Test</a> — June 18, 2009 <a href="#comment-581868">#</a> </small></p>
+	</li>
+
+
+
+
+
+	<li id="comment-581936" class="class_comment1">
+	<p>Sure, with is bad if you’re doing assignments and/or don’t know
+about what attributes are going to be hanging around on your objects.
+But it has perfectly valid and safe uses.  Something like:</p>
+<p>with (window.location) { protocol + ‘//’ + host + pathname }</p>
+<p>can’t possibly have any deleterious effects, and it is clearer and
+more expressive than other alternatives involving closures or predefined
+ vars.</p>
+	<p class="alignright"><small>Comment by <a href="http://sustainablecode.blogspot.com/" rel="external nofollow" class="url">Frederick Polgardy</a> — June 24, 2009 <a href="#comment-581936">#</a> </small></p>
+	</li>
+
+
+
+
+
+	<li id="comment-586079" class="class_comment2">
+	<p>The point is definately valid in the particular “<i>walla walla bing bang</i>” case. </p>
+<p>However, here is an appropriate use of <b>with</b> that is perhaps <b>not harmful</b>.</p>
+<p><code><br>
+with( document.getElementById('foo').style ) {<br>
+ fontSize = '15px';<br>
+ fontWeight = 'bold';<br>
+ color = '#000000';<br>
+}<br>
+</code></p>
+	<p class="alignright"><small>Comment by <a href="http://www.jwarp.org/" rel="external nofollow" class="url">Noah</a> — November 7, 2009 <a href="#comment-586079">#</a> </small></p>
+	</li>
+
+
+
+
+
+	<li id="comment-586080" class="class_comment1">
+	<p>And in reponse Brian Van 3 posts above:</p>
+<p>Wrong. All style objects contain every style property already defined
+ in them, always, in all browsers, regardless of whether they have ever
+been set by you.<br>
+Default values are usually blank strings, but sometimes things like “auto” or “inherit”.</p>
+	<p class="alignright"><small>Comment by <a href="http://www.jwarp.org/" rel="external nofollow" class="url">Noah</a> — November 7, 2009 <a href="#comment-586080">#</a> </small></p>
+	</li>
+
+
+
+
+
+	<li id="comment-586082" class="class_comment2">
+	<p>The Fifth Edition of the ECMAScript Standard has a strict mode that
+does not permit the use of the with statement. It is likely that future
+editions will be built on top of ES5?s strict mode. So unless you are
+writing throw-away code, you would be wise to not us the with statement.</p>
+	<p class="alignright"><small>Comment by <a href="http://javascript.crockford.com/" rel="external nofollow" class="url">Douglas Crockford</a> — November 7, 2009 <a href="#comment-586082">#</a> </small></p>
+	</li>
+
+
+
+
+
+	<li id="comment-587475" class="class_comment1">
+	<p>That’s not what the with statement is for. It’s for importing a
+namespace, like “from library import *” in python. Each library has a
+single global namespace (object) where it keeps all of its functions and
+ constants (you are putting all of your global state in a single object,
+ aren’t you?), and you use a with statement to “import” it. Then you’re
+going to expect your locals of the same name as variables in that
+namespace to be clobbered, just as you expect that when you do an import
+ in python or a let binding in lisp. If the with statement does
+disappear it will be possible to approximate it by creating a lambda and
+ calling apply on it with the namespace as the new “this”, but that’s
+syntactically more baroque as you have to write function() every time.</p>
+	<p class="alignright"><small>Comment by rabidsnail — December 15, 2009 <a href="#comment-587475">#</a> </small></p>
+	</li>
+
+
+
+
+
+	<li id="comment-587594" class="class_comment2">
+	<p>I’m still waiting why you think Kevin Greer’s example is wrong. It’s
+ not any larger than your strong objection to it. Nor is it perceptibly
+slower in any way that should matter. The best reason for not using the
+with statement is ES5 as you mentioned, not because of some example such
+ as Kevin’s. We have used that construct in small and large projects for
+ years and never encountered a problem. We think it’s the only
+legitimately safe use of with, but of course it’s simply better to be a
+cautious programmer and not use arcane methodologies that can cause
+future problems.</p>
+	<p class="alignright"><small>Comment by Henry Joe — December 23, 2009 <a href="#comment-587594">#</a> </small></p>
+	</li>
+
+
+
+
+
+	<li id="comment-587741" class="class_comment1">
+	<p>Another proposal could be to use a leading dot to indicate a “with” reference:</p>
+<p>with (ooo.eee.oo.ah_ah.ting.tang.walla.walla)<br>
+{<br>
+    .bing = true; // ooo.eee…<br>
+    .bang = true; // ooo.eee…<br>
+    bing = false; // a global bing<br>
+    bang = false; // a global bang<br>
+    alert(.bing != bing &amp;&amp; .bang != bang);<br>
+}</p>
+<p>FYI and FWIW, this is what is used in VB/VBScript/ASP.</p>
+	<p class="alignright"><small>Comment by Yimin — January 7, 2010 <a href="#comment-587741">#</a> </small></p>
+	</li>
+
+
+
+
+
+	<li id="comment-587828" class="class_comment2">
+	<p>The starting objection about global and local scope is only a
+problem is you don’t follow the long established programming convention
+of prefixing your variables to indicate their scope and intended type
+e.g. gsName (or gstrName) is a global variable that one intends to
+contain a string value, sName is the local variable.  Generally, judging
+ from most of the code published on the web, variable naming with
+javascript programmers is really sloppy as is their code layout and
+commenting.</p>
+	<p class="alignright"><small>Comment by <a href="http://www.skillmapper.org/" rel="external nofollow" class="url">TobyHS</a> — January 19, 2010 <a href="#comment-587828">#</a> </small></p>
+	</li>
+
+
+
+
+
+	<li id="comment-589255" class="class_comment1">
+	<p>“There is no way that you can tell by looking at the code which bing
+  and bang will get modifed. /* … */ It is impossible to know for sure.”</p>
+<p>Oh really? Wait, this is just plain wrong. Look up the docs. </p>
+<p>“The with statement adds a computed object to the front of the scope chain of the current execution<br>
+context, then executes a statement with this augmented scope chain, then restores the scope chain.” (ecma 12.10)</p>
+<p>Which effectively means that whatever bing or bang in the block,
+they’re first matched against the object’s properties, then whatever is
+in the outer scope. It’s just as easy as local vars in functions, only
+with respective object’s properties.</p>
+	<p class="alignright"><small>Comment by avatards — March 11, 2010 <a href="#comment-589255">#</a> </small></p>
+	</li>
+
+
+
+
+
+	<li id="comment-589864" class="class_comment2">
+	<p>@avatards You’ve just given another reason not to use the with
+statement: scope chain augmentation is detrimental to overall
+performance. :)</p>
+	<p class="alignright"><small>Comment by <a href="http://twitter.com/matthew_maxwell" rel="external nofollow" class="url">Matthew Maxwell</a> — March 26, 2010 <a href="#comment-589864">#</a> </small></p>
+	</li>
+
+
+
+
+
+	<li id="comment-590712" class="class_comment1">
+	<p>I think that there are many good uses for the javascript with statement. you just have to be careful with it.</p>
+<p>The biggest issue with the with statement is that it pushes the
+object AND IT’S PROTOTYPE CHAIN onto the scoop chain. what this means is
+ that it is nearly imposable to know if you can access a property that
+is not in the with object.</p>
+<p>hears an example.</p>
+<p>say some other script on the web page does this.<br>
+Object.prototype.msg = “hello world”;</p>
+<p>now hear is the issue<br>
+var msg = “hello earth”;<br>
+with( window ){<br>
+alert(msg);<br>
+}</p>
+<p>this should alert “hello earth” but it alerts “hello world”;<br>
+this form of scope augmentation is vary danguros</p>
+	<p class="alignright"><small>Comment by Thomas Devries — April 18, 2010 <a href="#comment-590712">#</a> </small></p>
+	</li>
+
+
+
+
+
+	<li id="comment-590724" class="class_comment2">
+	<p>The problem with the with statement isn’t that it is useless. The
+problem is that it is unnecessary and dangerous. Such features should
+always be avoided.</p>
+	<p class="alignright"><small>Comment by <a href="http://javascript.crockford.com/" rel="external nofollow" class="url">Douglas Crockford</a> — April 18, 2010 <a href="#comment-590724">#</a> </small></p>
+	</li>
+
+
+
+
+
+	<li id="comment-590793" class="class_comment1">
+	<p>Hello Crockford I love your speeches an views on javascript but I
+have looked into the ECMAScript standard and I belive that the with
+statement can be used but has to be used responsably. It can be
+dangerous but it can also be vary powerfull. one of the best example
+uses for the with statement can be found in Firebug. the with statement
+is safe enough that i don’t think it should be removed from ECMAScript</p>
+	<p class="alignright"><small>Comment by Thomas Devries — April 21, 2010 <a href="#comment-590793">#</a> </small></p>
+	</li>
+
+
+
+
+
+	<li id="comment-591323" class="class_comment2">
+	<p>the best whey to shrink object refrences that i have found is something like this i have been doing this for quite a while</p>
+<p>(function($){<br>
+    $.bing = true;<br>
+    $.bang = true;<br>
+}(ooo.eee.oo.ah_ah.ting.tang.walla.walla));</p>
+<p>this is realy useful for doing math heavy algorithoms</p>
+<p>(function($,x){<br>
+    return $.cos($.asin(x));<br>
+}(Math,0.5));</p>
+	<p class="alignright"><small>Comment by Thomas Devries — May 12, 2010 <a href="#comment-591323">#</a> </small></p>
+	</li>
+
+
+
+
+
+	<li id="comment-591324" class="class_comment1">
+	<p>You could also write that as</p>
+<p>    Math.cos(Math.asin(0.5))</p>
+<p>which would be smaller, faster, and more legible.</p>
+	<p class="alignright"><small>Comment by <a href="http://javascript.crockford.com/" rel="external nofollow" class="url">Douglas Crockford</a> — May 12, 2010 <a href="#comment-591324">#</a> </small></p>
+	</li>
+
+
+
+
+
+	<li id="comment-593065" class="class_comment2">
+	<p>why not just prevent any variable assignment within the with block. For example with(object){<br>
+someFunction();<br>
+myArray[10]=someProperty;<br>
+} works but you can’t do with(object){<br>
+x=someProperty<br>
+}</p>
+	<p class="alignright"><small>Comment by <a href="http://www.timando.net/" rel="external nofollow" class="url">Tim Anderson</a> — July 30, 2010 <a href="#comment-593065">#</a> </small></p>
+	</li>
+
+
+
+
+
+	<li id="comment-593375" class="class_comment1">
+	<p>This is all very pretty, and nice to know, and should be accepted as
+ norm of regular code. However, DSLs are very useful, are not normal
+code in most languages (method chaining technique is famous for breaking
+ <a href="http://en.wikipedia.org/wiki/Law_Of_Demeter" rel="nofollow">Law of Demeter</a>), as Martin Fowler says on his <a href="http://martinfowler.com/dslwip/MethodChaining.html" rel="nofollow">introduction</a> to the topic: <i>As you can see methods defined for Method Chaining  violate basic rules for API design</i>. A <a href="http://github.com/alexyoung/javascript-dsl-examples/blob/master/with_dsl_new_function.js" rel="nofollow">DSL</a> (with stripped commas for a bit less of noise) that is only possible with the ‘with’ statement (or instance_eval in Ruby):</p>
+<blockquote><p>DSLRunner.run(function() {<br>
+  bake(function() {<br>
+    addIngredient(‘flour’)<br>
+    addIngredient(‘yeast’)<br>
+    addIngredient(‘water’)</p>
+<p>    print(“Baking bread”)<br>
+  });</p>
+<p>  bake(function() {<br>
+    print(“Baking a cake”)<br>
+  });
+</p></blockquote>
+<p>Remember:<br>
+<i>Rebels learn the rules better than the rule-makers do. Rebels learn
+where the holes are, where the rules can be breached. Become an expert
+at the rules. Then break them with creativity and style.</i><br>
+-Kristine Kathryn Rusch</p>
+	<p class="alignright"><small>Comment by <a href="http://metaphysicaldeveloper.wordpress.com/" rel="external nofollow" class="url">Daniel Ribeiro</a> — August 17, 2010 <a href="#comment-593375">#</a> </small></p>
+	</li>
+
+
+
+
+
+	<li id="comment-594190" class="class_comment2">
+	<p>By the same reasoning…</p>
+<p><code><br>
+var test='global';</code></p><code>
+<p>function doTest(){<br>
+  var test='function';<br>
+  return test;<br>
+}</p>
+<p>alert(doTest());<br>
+alert(test);</p>
+</code><p><code></code></p>
+	<p class="alignright"><small>Comment by <a href="http://covac-software.com/" rel="external nofollow" class="url">Christian Sciberras</a> — September 6, 2010 <a href="#comment-594190">#</a> </small></p>
+	</li>
+
+
+
+
+
+	<li id="comment-594279" class="class_comment1">
+	<p>Okay, I think we can all agree that, when talking about the
+ooo.eee.oo.ah_ah.ting.tang.walla.walla object, it is NEVER a good
+idea–due to certain nebulous security issues inherent in the JavaScript
+engine–to set bing AND bang to true at the same time!</p>
+	<p class="alignright"><small>Comment by <a href="http://www.shavingmirrorinfo.net/" rel="external nofollow" class="url">mynamehere</a> — September 13, 2010 <a href="#comment-594279">#</a> </small></p>
+	</li>
+
+
+
+
+
+	<li id="comment-594291" class="class_comment2">
+	<p>“You could also write that as</p>
+<p>Math.cos(Math.asin(0.5))</p>
+<p>which would be smaller, faster, and more legible.”</p>
+<p>Or you could write it as</p>
+<p>with(Math) cos(asin(0.5));</p>
+<p>Which is even smaller, much more legible, and importantly, far more similar to what real mathematical equations look like.</p>
+<p>I also doubt very much that this is in any significant way slower than referencing ‘Math’ multiple times.</p>
+<p>It is probably not worth the trouble to use ‘with’ for a mere 2
+function calls, but if you are doing much more, it seems like a great
+way to make your code more legible. And in the case of ‘with(Math)’
+there is absolutely no ambiguity about what object
+sin/cos/floor/ceil/pow etc. come from.</p>
+	<p class="alignright"><small>Comment by <a href="http://bigmooworld.com/" rel="external nofollow" class="url">MooGoo</a> — September 14, 2010 <a href="#comment-594291">#</a> </small></p>
+	</li>
+
+
+
+
+
+	<li id="comment-596794" class="class_comment1">
+	<p>[...] way only works if you avoid using the javascript function
+eval() and statement with, both of which are vilified for their blocking
+ of javascript minifying, among other issues.) A real-world example of
+[...]</p>
+	<p class="alignright"><small>Pingback by <a href="http://scottbush.net/it/improve-page-load-times-by-compressing-code-or-mnfy-ur-js/" rel="external nofollow" class="url">Improve page load times by compressing code; or, "mnfy ur JS" | Scott Bush</a> — December 27, 2010 <a href="#comment-596794">#</a> </small></p>
+	</li>
+
+
+
+
+
+	<li id="comment-597339" class="class_comment2">
+	<p>(function(){<br>
+  with(this){  // ‘this’ is one of scope chains<br>
+    bing = true;<br>
+    bang = true;<br>
+  }<br>
+}).apply(ooo.eee.oo.ah_ah.ting.tang.walla.walla);</p>
+<p>If ‘bing’ is member of walla, then walla.bing will be setted.<br>
+If ‘bing’ is not member of walla, then bing will be global variant.</p>
+	<p class="alignright"><small>Comment by <a href="http://www.huyuhan.net/" rel="external nofollow" class="url">jameshooo</a> — January 25, 2011 <a href="#comment-597339">#</a> </small></p>
+	</li>
+
+
+
+
+
+	<li id="comment-597498" class="class_comment1">
+	<p>[...] geek, loves Mac a… To add, this article and also it's comments highlight few points. <a href="http://www.yuiblog.com/blog/2006.." rel="nofollow">http://www.yuiblog.com/blog/2006..</a>. &nbsp;Another point to add, I think it also hurts performance because it adds one more level of scope [...]</p>
+	<p class="alignright"><small>Pingback by <a href="http://www.quora.com/Why-is-the-with-statement-in-JavaScript-often-discouraged#ans389781" rel="external nofollow" class="url">Why is the "with" statement in JavaScript often discouraged? - Quora</a> — February 17, 2011 <a href="#comment-597498">#</a> </small></p>
+	</li>
+
+
+
+
+
+	<li id="comment-597551" class="class_comment2">
+	<p>The point is not that -with- is useless. The point is that it is,
+unfortunately, dangerous. And that it is, fortunately, unnecessary.
+Features that are both dangerous and unnecessary should to be used at
+all.</p>
+	<p class="alignright"><small>Comment by <a href="http://javascript.crockford.com/" rel="external nofollow" class="url">Douglas Crockford</a> — February 22, 2011 <a href="#comment-597551">#</a> </small></p>
+	</li>
+
+
+
+
+
+	<li id="comment-597642" class="class_comment1">
+	<p>This might be a solution to the problem if anyone really needs to use with():</p>
+<p>var obj = {a : ‘foo’, b : ‘bar’}, b = ‘brain’;</p>
+<p>// add _ prefix to object elements<br>
+function _(obj)<br>
+{<br>
+	for (var prop in obj)<br>
+		this['_'+prop] = obj[prop];<br>
+}</p>
+<p>// write obj.a and obj.b<br>
+with (obj)<br>
+{<br>
+	document.write(a);<br>
+	document.write(b);<br>
+}</p>
+<p>document.write(”);</p>
+<p>// write obj.a and global b<br>
+with (new _(obj))<br>
+{<br>
+	document.write(_a);<br>
+	document.write(b);<br>
+}</p>
+<p>// original object still remains<br>
+for (var prop in obj)<br>
+	document.write(”+prop+’ = ‘+obj[prop]);</p>
+	<p class="alignright"><small>Comment by danomator — March 4, 2011 <a href="#comment-597642">#</a> </small></p>
+	</li>
+
+
+
+
+
+	<li id="comment-597940" class="class_comment2">
+	<p>[...] von Scripts können in einen Strict Mode versetzt werden, in
+dem einige defekte JS-Altlasten (z.B. with(){}) nicht mehr verwendet
+werden können und der an einigen Stellen die Regeln von JavaScript so
+[...]</p>
+	<p class="alignright"><small>Pingback by <a href="http://www.peterkroener.de/ecmascript5-die-nachste-version-von-javascript-teil-1-ein-uberblick/" rel="external nofollow" class="url">ECMAScript&nbsp;5,
+ die nächste Version von JavaScript&nbsp;– Teil 1: Ein Überblick • Peter
+ Kröner, Webdesigner &amp; Frontendentwickler</a> — April 5, 2011 <a href="#comment-597940">#</a> </small></p>
+	</li>
+
+
+
+
+</ol>
+</div>
+</div></body></html>

@@ -1,0 +1,391 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"><head profile="http://gmpg.org/xfn/11">
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+	<title>Strict Mode Is Coming To Town » Yahoo! User Interface Blog (YUIBlog)</title>
+<!-- 	<title>Yahoo! User Interface Blog (YUIBlog) &raquo; Strict Mode Is Coming To Town</title> -->
+	 <meta http-equiv="Content-Encoding" content="gzip">
+<meta http-equiv="Accept-Encoding" content="gzip, deflate">
+	<meta name="generator" content="WordPress 3.0.4"> <!-- leave this for stats please -->
+	<!-- geocoding -->
+	<meta name="ICBM" content="37.416383,-122.024870">
+	<meta name="DC.title" content="Yahoo! User Interface Blog">
+	<!-- /geocoding -->
+<style>
+body {
+    font-family: Arial !important;
+}
+</style>
+</head>
+
+<body>
+<div id="content">
+
+	<div id="header" onclick="location.href='http://www.yuiblog.com/blog';" style="cursor: pointer;">
+		<h1><a href="http://www.yuiblog.com/blog">Yahoo! User Interface Blog (YUIBlog)</a></h1>
+	</div>
+<!-- end header -->
+	<div id="bloque">
+
+		<div id="noticias">
+
+		<!--suppress WP formatting-->
+			<div class="entrada">
+				<h2 id="post-3063"><a href="http://www.yuiblog.com/blog/2010/12/14/strict-mode-is-coming-to-town/" rel="bookmark" title="Permanent Link to Strict Mode Is Coming To Town">Strict Mode Is Coming To Town</a></h2>
+				<small>December 14, 2010 at 2:12 pm by Douglas Crockford | In <a href="http://www.yuiblog.com/blog/category/development/" title="View all posts in Development" rel="category tag">Development</a> | <a href="http://www.yuiblog.com/blog/2010/12/14/strict-mode-is-coming-to-town/#comments" title="Comment on Strict Mode Is Coming To Town">20 Comments</a></small>
+
+			<p>This is the time and season when people all over the world forget
+their differences and come together in peace and fellowship to celebrate
+ the first anniversary of the ECMA General Assembly’s approval of The
+ECMAScript Programming Language Standard, Fifth Edition. The most
+important feature in ES5 is the new Strict Mode. Strict Mode is an
+opt-in mode that repairs or removes some of the language’s most
+problematic features. </p> <h2>Specifying Strict Mode</h2> <p>There are two ways to request strict mode. The first is to insert this pragma</p>
+
+<pre>"use strict";</pre>
+
+<p>at the top of a file or compilation unit. It must appear before any
+other statements, but it may be preceded by whitespace and comments. It
+has the form of a useless string literal statement, so it will be
+ignored by ES3 systems. This means that it is possible to write
+ES5/strict programs that can also run on the older browsers. Strict code
+ can also interact with non-strict (or <i>sloppy</i>) code, so strict
+functions can call sloppy functions, and sloppy functions can call
+strict functions. This high level of compatibility makes adoption of
+strict mode easy.</p> <p>All of the code in the file or compilation unit with the <code>"use strict";</code> preamble will be processed as strict code. There is a problem, though. <a href="http://yuiblog.com/blog/2007/09/04/video-souders/">Performance considerations</a> currently compel us to concatenate many JavaScript files together to avoid cumulative HTTP delays. If a file with a <code>"use strict";</code>
+ preamble has sloppy code appended to it, the sloppy code will be
+processed as strict and will probably fail. There is an easy rule: Do
+not mix strict and sloppy in the same file, but we have already seen
+some famous websites get this wrong.</p> <p>The second way is to insert
+the pragma is as the first statement of a function. That declares that
+the whole function will be strict, including any functions that are
+nested within it. Strictness respects function scope, so strict code and
+ sloppy code can be mixed in the same file. This second form works very
+well with the <a href="http://yuiblog.com/blog/2007/06/12/module-pattern/">Module Pattern</a> and its many variations. The second form is preferred because it avoids the concatenation hazard.</p>
+<pre>(function () {
+   "use strict";
+   // this function is strict...
+}());
+
+(function () {
+   // but this function is sloppy...
+}());</pre>
+<h2>Scope</h2>
+<p>Historically, JavaScript has been confused about how functions are
+scoped. Sometimes they seem to be statically scoped, but some features
+make them behave like they are dynamically scoped. This is confusing,
+making programs difficult to read and understand. Misunderstanding
+causes bugs. It also is a problem for performance. Static scoping would
+permit variable binding to happen at compile time, but the requirement
+for dynamic scope means the binding must be deferred to runtime, which
+comes with a significant performance penalty. </p> <p>Strict mode
+requires that all variable binding be done statically. That means that
+the features that previously required dynamic binding must be eliminated
+ or modified. Specifically, the <a href="http://yuiblog.com/blog/2006/04/11/with-statement-considered-harmful/">with statement</a> is eliminated, and the <code>eval</code> function’s ability to tamper with the environment of its caller is severely restricted.</p> <p>One of the benefits of strict code is that tools like <a href="http://developer.yahoo.com/yui/compressor/">YUI Compressor</a> can do a better job when processing it.</p> <h2>Implied Global Variables</h2> <p>JavaScript
+ has implied global variables. If you do not explicitly declare a
+variable, a global variable is implicitly declared for you. This makes
+programming easier for beginners because they can neglect some of their
+basic housekeeping chores. But it makes the management of larger
+programs much more difficult and it significantly degrades reliability.
+So in strict mode, implied global variables are no longer created. You
+should explicitly declare all of your variables.</p> <h2>Global Leakage</h2> <p>There are a number of situations that could cause <code>this</code> to be bound to the global object. For example, if you forget to provide the <code><a href="http://www.yuiblog.com/blog/2006/11/13/javascript-we-hardly-new-ya/">new</a></code><a href="http://www.yuiblog.com/blog/2006/11/13/javascript-we-hardly-new-ya/"> prefix</a> when calling a constructor function, the constructor’s <code>this</code>
+ will be bound unexpectedly to the global object, so instead of
+initializing a new object, it will instead be silently tampering with
+global variables. In these situations, strict mode will instead bind <code>this</code> to <code>undefined</code>, which will cause the constructor to throw an exception instead, allowing the error to be detected much sooner. </p> <h2>Noisy Failure</h2> <p>JavaScript has always had read-only properties, but you could not create them yourself until ES5’s <code>Object.createProperty</code>
+ function exposed that capability. If you attempted to assign a value to
+ a read-only property, it would fail silently. The assignment would not
+change the property’s value, but your program would proceed as though it
+ had. This is an integrity hazard that can cause programs to go into an
+inconsistent state. In strict mode, attempting to change a read-only
+property will throw an exception.</p> <h2>Octal</h2> <p>The octal (or
+base 8) representation of numbers was extremely useful when doing
+machine-level programming on machines whose word sizes were a multiple
+of 3. You needed octal when working with the CDC 6600 mainframe, which
+had a word size of 60 bits. If you could read octal, you could look at a
+ word as 20 digits. Two digits represented the op code, and one digit
+identified one of 8 registers. During the slow transition from machine
+codes to high level languages, it was thought to be useful to provide
+octal forms in programming languages.</p> <p>In C, an extremely
+unfortunate representation of octalness was selected: Leading zero. So
+in C, 0100 means 64, not 100, and 08 is an error, not 8. Even more
+unfortunately, this anachronism has been copied into nearly all modern
+languages, including JavaScript, where it is only used to create errors.
+ It has no other purpose. So in strict mode, octal forms are no longer
+allowed.</p> <h2>Et cetera</h2> <p>The <code>arguments</code> pseudo array becomes a little bit more array-like in ES5. In strict mode, it loses its <code>callee</code> and <code>caller</code> properties. This makes it possible to pass your <code>arguments</code> to untrusted code without giving up a lot of confidential context. Also, the <code>arguments</code> property of functions is eliminated.</p> <p>In
+ strict mode, duplicate keys in a function literal will produce a syntax
+ error. A function can’t have two parameters with the same name. A
+function can’t have a variable with the same name as one of its
+parameters. A function can’t <code>delete</code> its own variables. An attempt to <code>delete</code> a non-configurable property now throws an exception. Primitive values are not implicitly wrapped.</p> <p>If your program passes <a href="http://www.jslint.com/">JSLint</a>, it will probably work in strict mode.</p> <h2>It Is Still An Imperfect World</h2> <p>There
+ are still problems in JavaScript that strict mode does not address. For
+ example, semicolon insertion is still a hazard, and 0.1 <code>+</code> 0.2 is still not equal to 0.3. Correction of these problems will have to wait for future editions.</p> <h2>Why Strict Mode Matters</h2> <p>In
+ addition to the obvious benefits to program reliability and
+readability, strict mode is helping to solve the Mashup Problem. We want
+ to be able to invite third party code onto our pages to do useful
+things for us and our users, without giving that code the license to
+take over the browser or to misrepresent itself to the user or our
+servers. We need to constrain the third party code. Systems like <a href="http://code.google.com/p/google-caja/">Google’s Caja</a> do this, but at a significant cost in performance and inconvenience. My own <a href="http://www.adsafe.org/">ADsafe</a> system also does this, but at the cost of eliminating <code>this</code> and <code>[]</code>
+ subscripting from the language, which can make adoption difficult.
+Strict mode allows us to make third party code with the convenience and
+performance of ADsafe and the expressiveness of Caja. This will be
+critically important as our sites become more complex and more
+connected.</p> <p>Strict mode does not solve the XSS problem. The solution to that problem depends on <a href="http://ajax.sys-con.com/node/1544072">W3C taking some positive action</a>. </p> <p>ES5/strict is now in previews, and will soon be standard equipment in all standards compliant browsers everywhere.</p>
+			<p class="related">Find conversations: <a href="http://www.bloglines.com/citations?url=http://www.yuiblog.com/blog/2010/12/14/strict-mode-is-coming-to-town/" title="find related discussion on bloglines">bloglines</a> | <a href="http://technorati.com/cosmos/search.html?url=http://www.yuiblog.com/blog/2010/12/14/strict-mode-is-coming-to-town/" title="find related discusion on technorati">technorati</a></p>
+			<p class="spread">Share and extend: <a href="http://del.icio.us/post?url=http://del.icio.us/post?url=http://www.yuiblog.com/blog/2010/12/14/strict-mode-is-coming-to-town/&amp;title=Strict%20Mode%20Is%20Coming%20To%20Town" title="bookmark Strict Mode Is Coming To Town in del.icio.us">Bookmark with del.icio.us</a>&nbsp;|&nbsp;<a href="http://www.digg.com/submit?url=http://www.yuiblog.com/blog/2010/12/14/strict-mode-is-coming-to-town/&amp;phase=2" title="digg this post">digg it!</a>&nbsp;|&nbsp;<a href="http://reddit.com/submit?url=http://www.yuiblog.com/blog/2010/12/14/strict-mode-is-coming-to-town/&amp;title=Strict%20Mode%20Is%20Coming%20To%20Town" title="post Strict Mode Is Coming To Town to reddit">reddit!</a></p>
+			<!---->
+
+            <iframe src="yuiblog_files/like.htm" allowtransparency="true" style="border: medium none; overflow: hidden; width: 450px; height: 25px;" frameborder="0" scrolling="no"></iframe>
+
+			<div class="feedback"></div>
+
+
+			<!--
+			<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+			xmlns:dc="http://purl.org/dc/elements/1.1/"
+			xmlns:trackback="http://madskills.com/public/xml/rss/module/trackback/">
+		<rdf:Description rdf:about="http://www.yuiblog.com/blog/2010/12/14/strict-mode-is-coming-to-town/"
+    dc:identifier="http://www.yuiblog.com/blog/2010/12/14/strict-mode-is-coming-to-town/"
+    dc:title="Strict Mode Is Coming To Town"
+    trackback:ping="http://www.yuiblog.com/blog/2010/12/14/strict-mode-is-coming-to-town/trackback/" />
+</rdf:RDF>			-->
+
+
+			</div>
+
+
+
+<h2 id="comments">20 Comments
+</h2>
+
+
+<p>
+
+</p>
+
+<ol id="commentlist">
+
+
+
+	<li id="comment-596377" class="class_comment1">
+	<p>as usual awesome post! ES5 is the future..Object.create(),
+Object.defineProperty(), Object.isExtensible(), Array.isArray(), native
+support for JSON are great features..checking out ADsafe, looks
+promising</p>
+	<p class="alignright"><small>Comment by <a href="http://sebarmeli.com/" rel="external nofollow" class="url">Sebastiano Armeli</a> — December 14, 2010 <a href="#comment-596377">#</a> </small></p>
+	</li>
+
+
+
+
+
+	<li id="comment-596404" class="class_comment2">
+	<p>If arguments.callee is out, is there another way of referencing a lambda from its body?</p>
+	<p class="alignright"><small>Comment by <a href="http://blog.arieh.co.il/" rel="external nofollow" class="url">Arieh</a> — December 15, 2010 <a href="#comment-596404">#</a> </small></p>
+	</li>
+
+
+
+
+
+	<li id="comment-596420" class="class_comment1">
+	<p>Are there any browsers (beta or not) that are fully strict mode compliant?</p>
+	<p class="alignright"><small>Comment by Nate — December 15, 2010 <a href="#comment-596420">#</a> </small></p>
+	</li>
+
+
+
+
+
+	<li id="comment-596422" class="class_comment2">
+	<p>@Arieh, yep -<br>
+<code><br>
+var carl = function bob(a) {<br>
+  if (!a) { bob(1); } // reference scoped to inside this function<br>
+  alert(carl === bob); // gotcha - true in all browsers but false in ie...<br>
+};<br>
+</code></p>
+	<p class="alignright"><small>Comment by <a href="http://www.scottlogic.co.uk/blog/chris/" rel="external nofollow" class="url">Chris</a> — December 15, 2010 <a href="#comment-596422">#</a> </small></p>
+	</li>
+
+
+
+
+
+	<li id="comment-596425" class="class_comment1">
+	<p>Arieh: You can name function expressions and refer to them by that name. e.g. <code>var x = function lookMaNoYCombinator(a, b) { if (a === 0) return a + b; else return lookMaNoYCombinator(a - 1, b) }</code></p>
+	<p class="alignright"><small>Comment by <a href="http://samhuri.net/" rel="external nofollow" class="url">Sami Samhuri</a> — December 15, 2010 <a href="#comment-596425">#</a> </small></p>
+	</li>
+
+
+
+
+
+	<li id="comment-596428" class="class_comment2">
+	<p>@Arieh:  you should be using a named lambda if you want to recurse.
+eg. (function f(){ f() }).  This also has the advantage of not bindings
+the Arguments object to |this|</p>
+	<p class="alignright"><small>Comment by <a href="http://nerget.com/" rel="external nofollow" class="url">Oliver</a> — December 15, 2010 <a href="#comment-596428">#</a> </small></p>
+	</li>
+
+
+
+
+
+	<li id="comment-596429" class="class_comment1">
+	<p>@Nate: nightly builds of webkit and firefox should both be strict
+mode compliant, and we would all appreciate bugs being filed if you find
+ any (at <a href="http://bugs.webkit.org/" rel="nofollow">http://bugs.webkit.org</a> and <a href="http://bugs.mozilla.org%29/" rel="nofollow">http://bugs.mozilla.org)</a></p>
+	<p class="alignright"><small>Comment by <a href="http://nerget.com/" rel="external nofollow" class="url">Oliver</a> — December 15, 2010 <a href="#comment-596429">#</a> </small></p>
+	</li>
+
+
+
+
+
+	<li id="comment-596434" class="class_comment2">
+	<p>A great chart showing ES5 compatibility in various browsers can be found here: <a href="http://kangax.github.com/es5-compat-table/" rel="nofollow">http://kangax.github.com/es5-compat-table/</a></p>
+	<p class="alignright"><small>Comment by <a href="http://www.jimmycuadra.com/" rel="external nofollow" class="url">Jimmy</a> — December 15, 2010 <a href="#comment-596434">#</a> </small></p>
+	</li>
+
+
+
+
+
+	<li id="comment-596482" class="class_comment1">
+	<p>‘with’ and injecting eval <a href="http://groups.google.com/group/google-caja-discuss/browse_thread/thread/edc12e29e2cfba9f/c2ea493e83a6bf1f?lnk=gst#c2ea493e83a6bf1f" rel="nofollow">didn’t really implement dynamic binding</a>.
+ Even full ES3 uses lexical binding (although not necessarily static
+binding) in all cases. These features were certainly confusing, though.</p>
+	<p class="alignright"><small>Comment by David-Sarah Hopwood — December 16, 2010 <a href="#comment-596482">#</a> </small></p>
+	</li>
+
+
+
+
+
+	<li id="comment-596487" class="class_comment2">
+	<p>Hello Douglas,</p>
+<p>Good overview, thanks. In addition, I’m sure your readers will be interested in the detailed strict mode description: <a href="http://dmitrysoshnikov.com/ecmascript/es5-chapter-2-strict-mode/" rel="nofollow">http://dmitrysoshnikov.com/ecmascript/es5-chapter-2-strict-mode/</a></p>
+<p>P.S.: a pair of additions/corrections:</p>
+<blockquote><p>A function can’t have a variable with the same name as one of its parameters.</p></blockquote>
+<p>It’s OK to have a variable declaration with the same name as one of
+the arguments. Technically, declaration will be just skipped, since it’s
+ already declared via the argument binding.</p>
+<blockquote><p>A function can’t delete its own variables.</p></blockquote>
+<p>It was always so — variables (except of those which created using <code>eval</code>
+ context) always have {DontDelete} in ES3 / [[Configurable]] = false in
+ES5. I.e. it’s not possible to delete a variable regardless the strict
+mode.</p>
+<p>Dmitry.</p>
+	<p class="alignright"><small>Comment by <a href="http://dmitrysoshnikov.com/" rel="external nofollow" class="url">Dmitry A. Soshnikov</a> — December 17, 2010 <a href="#comment-596487">#</a> </small></p>
+	</li>
+
+
+
+
+
+	<li id="comment-596495" class="class_comment1">
+	<p>Will YUI3 add “use strict” to its modules?</p>
+	<p class="alignright"><small>Comment by David — December 17, 2010 <a href="#comment-596495">#</a> </small></p>
+	</li>
+
+
+
+
+
+	<li id="comment-596807" class="class_comment2">
+	<p>Hi Douglas,</p>
+<p>I am confused on below statement from your post.</p>
+<p>“Strict mode requires that all variable binding be done statically.
+That means that the features that previously required dynamic binding
+must be eliminated or modified”</p>
+<p>keyword “this” – Does it have dynamic binding or lexical(static) binding?</p>
+<p>If it is having dynamic binding, do you mean to say we should stop using ‘this’ in strict mode?</p>
+<p>I am really confused. I started learning JavaScript from last one
+month from your video presentations. They are very very helpful. This is
+ my first programming language. May be my doubt is very odd here.</p>
+<p>But just want to hear from you on ‘this’ doubt.</p>
+<p>Thanks</p>
+	<p class="alignright"><small>Comment by <a href="http://www.ekanna.com/" rel="external nofollow" class="url">ekanna</a> — December 28, 2010 <a href="#comment-596807">#</a> </small></p>
+	</li>
+
+
+
+
+
+	<li id="comment-596833" class="class_comment1">
+	<p>In strict mode, the method form binds this to the object as before.
+The function form binds this to undefined, not the global object.</p>
+	<p class="alignright"><small>Comment by <a href="http://javascript.crockford.com/" rel="external nofollow" class="url">Douglas Crockford</a> — December 29, 2010 <a href="#comment-596833">#</a> </small></p>
+	</li>
+
+
+
+
+
+	<li id="comment-596834" class="class_comment2">
+	<p>Dmitry, you just described the case where you can make the variables
+ that you can then delete! The syntax of the delete operator allows for
+variables exactly for that case. But no more.</p>
+<p>And David-Sarah, the hairs you are splitting are quite short.</p>
+	<p class="alignright"><small>Comment by <a href="http://javascript.crockford.com/" rel="external nofollow" class="url">Douglas Crockford</a> — December 29, 2010 <a href="#comment-596834">#</a> </small></p>
+	</li>
+
+
+
+
+
+	<li id="comment-596943" class="class_comment1">
+	<p>Thanks Douglas.</p>
+	<p class="alignright"><small>Comment by <a href="http://www.ekanna.com/" rel="external nofollow" class="url">ekanna</a> — January 7, 2011 <a href="#comment-596943">#</a> </small></p>
+	</li>
+
+
+
+
+
+	<li id="comment-597014" class="class_comment2">
+	<p>May want to correct typo in “Noisy Failure” section– “createProperty” should be “defineProperty”.</p>
+	<p class="alignright"><small>Comment by Travis — January 11, 2011 <a href="#comment-597014">#</a> </small></p>
+	</li>
+
+
+
+
+
+	<li id="comment-597049" class="class_comment1">
+	<p>“strictly awesome”</p>
+	<p class="alignright"><small>Comment by franz enzenhofer — January 13, 2011 <a href="#comment-597049">#</a> </small></p>
+	</li>
+
+
+
+
+
+	<li id="comment-597280" class="class_comment2">
+	<p>Crockford rockz!</p>
+	<p class="alignright"><small>Comment by Marc Draco — January 20, 2011 <a href="#comment-597280">#</a> </small></p>
+	</li>
+
+
+
+
+
+	<li id="comment-597410" class="class_comment1">
+	<p>So, when will YUI Compressor stop dropping the “use strict”; pragma from the code during minifaction? :)</p>
+	<p class="alignright"><small>Comment by <a href="http://blog.marcoos.com/" rel="external nofollow" class="url">marcoos</a> — February 3, 2011 <a href="#comment-597410">#</a> </small></p>
+	</li>
+
+
+
+
+
+	<li id="comment-597411" class="class_comment2">
+	<p>s/minifaction/minification/</p>
+	<p class="alignright"><small>Comment by <a href="http://blog.marcoos.com/" rel="external nofollow" class="url">marcoos</a> — February 3, 2011 <a href="#comment-597411">#</a> </small></p>
+	</li>
+
+
+
+
+</ol>
+</div>
+</body></html>

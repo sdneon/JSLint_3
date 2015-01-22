@@ -1,0 +1,969 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"><head profile="http://gmpg.org/xfn/11">
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+	<title>JavaScript, We Hardly new Ya » Yahoo! User Interface Blog (YUIBlog)</title>
+<!-- 	<title>Yahoo! User Interface Blog (YUIBlog) &raquo; JavaScript, We Hardly new Ya</title> -->
+	 <meta http-equiv="Content-Encoding" content="gzip">
+<meta http-equiv="Accept-Encoding" content="gzip, deflate">
+<!--
+	<style type="text/css" media="screen">
+		@import url(http://www.yuiblog.com/blog/wp-content/themes/yuiblog_v1/style.css);
+	</style>
+-->
+<style>
+body {
+    font-family: Arial !important;
+}
+</style>
+</head>
+
+<body>
+<div id="content">
+
+	<div id="header" onclick="location.href='http://www.yuiblog.com/blog';" style="cursor: pointer;">
+		<h1><a href="http://www.yuiblog.com/blog">Yahoo! User Interface Blog (YUIBlog)</a></h1>
+	</div>
+
+<!-- end header -->
+	<div id="bloque">
+
+		<div id="noticias">
+
+		<!--don't suppress WP formatting-->
+			<div class="entrada">
+				<h2 id="post-58"><a href="http://www.yuiblog.com/blog/2006/11/13/javascript-we-hardly-new-ya/" rel="bookmark" title="Permanent Link to JavaScript, We Hardly &lt;code&gt;new&lt;/code&gt; Ya">JavaScript, We Hardly <code>new</code> Ya</a></h2>
+				<small>November 13, 2006 at 9:21 am by Douglas Crockford | In <a href="http://www.yuiblog.com/blog/category/development/" title="View all posts in Development" rel="category tag">Development</a> | <a href="#comments" title="Comment on JavaScript, We Hardly new Ya">54 Comments</a></small>
+
+			<p>JavaScript is a prototypal language, but it has a <code>new</code>
+ operator that tries to make it look sort of like a classical language.
+That tends to confuse programmers, leading to some problematic
+programming patterns.</p>
+<p>You never need to use <code>new Object()</code> in JavaScript. Use the object literal <code>{}</code> instead. Similarly, don’t use <code>new Array()</code>, use the array literal <code>[]</code> instead. Arrays in JavaScript work nothing like the arrays in Java, and use of the Java-like syntax will confuse you.</p>
+<p>Do not use <code>new Number</code>, <code>new String</code>, or <code>new Boolean</code>.  These forms produce unnecessary object wrappers. Just use simple literals instead. </p>
+<p>Do not use <code>new Function</code> to create function values. Use function expressions instead. For example,</p>
+<pre>frames[0].onfocus = new Function("document.bgColor='antiquewhite'")</pre>
+<p>is better written as</p>
+<pre>frames[0].onfocus = function () {document.bgColor = 'antiquewhite';};</pre>
+<p>The second form allows the compiler to see the function body sooner, so any errors in it will be detected sooner. Sometimes <code>new Function</code> is used by people who do not understand how inner functions work.</p>
+<pre>selObj.onchange = new Function("dynamicOptionListObjects["+
+        dol.index+"].change(this)"); </pre>
+<p>If we keep function bodies in strings, the compiler can’t see them.
+If we keep function bodies as string expressions, we can’t see them
+either. It is better to not program in ignorance. By making a function
+that returns a function, we can explicitly pass in the values we want to
+ bind. This allows us to initialize a set of <code>selObj</code> in a loop. </p>
+<pre>selObj.onchange = function (i) {
+    return function () {
+        dynamicOptionListObjects[i].change(this);
+
+    };
+}(dol.index);</pre>
+<p>It is never a good idea to put <code>new</code> directly in front of <code>function</code>.    For example, <code>new function</code> provides no advantage in constructing new objects. </p>
+<pre>myObj = new function () {
+    this.type = 'core';
+};</pre>
+<p>It is better to use an object literal. It is smaller, faster. </p>
+<pre>myObj = {
+    type: 'core'
+};</pre>
+<p>If we are making an object containing methods that are bound to
+private variables  and functions, it is still better to leave off the <code>new</code> prefix.</p>
+<pre>var foo = new function() {
+    function processMessages(message) {
+        alert("Message: " + message.content);
+    }
+    this.init = function() {
+        subscribe("/mytopic", this, processMessages);
+    }
+}</pre>
+<p>By using <code>new</code> to invoke the function, the object holds onto a worthless <code>prototype</code> object. That wastes memory with no offsetting advantage. If we do not use the <code>new</code>, we don’t keep the wasted <code>prototype</code> object in the chain. So instead we will invoke the factory function the right way, using <code>()</code>.</p>
+<pre>var foo = function () {
+    function processMessages(message) {
+        alert("Message: " + message.content);
+    }
+    return {
+        init: function () {
+            subscribe("/mytopic", this, processMessages);
+        }
+    };
+}();
+</pre>
+<p>So the rule is simple: The only time we should use the <code>new</code> operator is to invoke a pseudoclassical Constructor function. When calling a Constructor function, the use of <code>new</code> is mandatory. </p>
+<p>There is a time to <code>new</code>, and a time to not. </p>
+</div>
+
+
+
+<h2 id="comments">54 Comments
+</h2>
+
+
+<p>
+
+</p>
+
+<ol id="commentlist">
+
+
+
+	<li id="comment-15104" class="class_comment1">
+	<p>Great post! It would be great to see more posts like this!!!!</p>
+	<p class="alignright"><small>Comment by Eduardo Scoz — November 13, 2006 <a href="#comment-15104">#</a> </small></p>
+	</li>
+
+
+
+
+
+	<li id="comment-15105" class="class_comment2">
+	<p>Great article to get people thinking on the same page. Also, a
+reminder from all the hints at these techniques through other sites on
+JavaScript.</p>
+	<p class="alignright"><small>Comment by Joel — November 13, 2006 <a href="#comment-15105">#</a> </small></p>
+	</li>
+
+
+
+
+
+	<li id="comment-15107" class="class_comment1">
+	<p>The <code>new Function(...)</code> syntax is a bit bizarre, however
+there’s something to it that may make some sense. Specifically, because
+it turns a string into a function body, it can be used in place of <code>eval()</code> for parsing JSON (or pseudo-JSON) values. In other words, instead of <code>eval("var myobj = " + JSONString)</code>, you can use <code>var myobj = (new Function("return " + JSONString))()</code>.</p>
+<p>This syntax isn’t obviously better in any particular way, however it
+does allow for JSON that is a tiny bit safer by limiting evaluation to
+the object that’s being returned. It also appears to execute in about
+half the time as <code>eval</code> in Firefox (haven’t tested others
+yet). And if you assign the new function itself to a variable (rather
+than executing and disposing of it immediately), you can easily create
+multiple copies of the object without repeatedly calling <code>eval(...)</code>. </p>
+<p>So, yeah, <code>new Function(...)</code> is generally a silly construct and using it is usually a poor design choice, but it’s got one nice use.</p>
+	<p class="alignright"><small>Comment by <a href="http://www.markkawakami.com/" rel="external nofollow" class="url">Mark Kawakami</a> — November 13, 2006 <a href="#comment-15107">#</a> </small></p>
+	</li>
+
+
+
+
+
+	<li id="comment-15109" class="class_comment2">
+	<p>You said:</p>
+<blockquote cite="Yahoo"><p>Do not use new Number, new String, or new
+Boolean. These forms produce unnecessary object wrappers. Just use
+simple literals instead.</p></blockquote>
+<p>However, I <a href="http://dev.opera.com/articles/view/48/?page=2#implicitconversion" rel="nofollow">recently  read</a> the following advice:</p>
+<blockquote cite="Opera"><p>If your code calls methods of literal values very often, you should consider converting them into objects instead.</p></blockquote>
+<p>So for a string s, they claim that s.length will be more efficient if
+ s is a String object, vs a string literal, but I haven’t verified.</p>
+	<p class="alignright"><small>Comment by <a href="http://www.barelyfitz.com/" rel="external nofollow" class="url">Patrick Fitzgerald</a> — November 13, 2006 <a href="#comment-15109">#</a> </small></p>
+	</li>
+
+
+
+
+
+	<li id="comment-15114" class="class_comment1">
+	<p>Most of the advice in <a href="http://dev.opera.com/articles/view/48/?page=2" rel="nofollow">http://dev.opera.com/articles/view/48/?page=2</a> is very good. But avoid new String(). Its current behavior will probably not survive in the Fourth Edition of ECMAScript.</p>
+	<p class="alignright"><small>Comment by <a href="http://360.yahoo.com/douglascrockford" rel="external nofollow" class="url">Douglas Crockford</a> — November 13, 2006 <a href="#comment-15114">#</a> </small></p>
+	</li>
+
+
+
+
+
+	<li id="comment-15132" class="class_comment2">
+	<p>I also read the <a href="http://dev.opera.com/articles/view/48/?page=2#implicitconversion" rel="nofollow"> article</a>, and thought one of the key “light bulbs” was the “Beware of implicit object conversion” topic.</p>
+<blockquote cite="Opera"><p>
+If your code calls methods of literal values very often, you should
+consider converting them into objects instead, as in the previous
+example.
+</p></blockquote>
+<p>I guess it’s something to be aware of if you’re writing a heavy/high performance widget or app.</p>
+<p>Mostly, at least for the simpler loops, this can be avoided by moving
+ the objects method call from the middle of the loop to the
+initialisation stage. e.g. from <code>for( var i = 0; i  to for( var i = 0, l = s.length; i </code></p>
+	<p class="alignright"><small>Comment by <a href="http://www.singular.co.nz/" rel="external nofollow" class="url">Dave Transom</a> — November 13, 2006 <a href="#comment-15132">#</a> </small></p>
+	</li>
+
+
+
+
+
+	<li id="comment-15133" class="class_comment1">
+	<p>I think it’s also important to answer the question, “if I’m not supposed to do it, then why am I allowed to?” In the case of <code>String</code>, <code>Number</code>, <code>Boolean</code>, and <code>Function</code>,
+ these constructors are available so that their prototypes can be
+augmented, not so they can be instantiated. Since these are used to
+create wrappers on the fly, it’s the only way to add new methods to this
+ type of data.</p>
+	<p class="alignright"><small>Comment by <a href="http://www.nczonline.net/" rel="external nofollow" class="url">Nicholas C. Zakas</a> — November 13, 2006 <a href="#comment-15133">#</a> </small></p>
+	</li>
+
+
+
+
+
+	<li id="comment-15137" class="class_comment2">
+	<p>[...] Check out the rest for an interesting back-and-forth. By the
+way, this isn’t meant to diss the Yahoo! folks, they’re churning out
+some amazing libraries, patterns and hints given the constraints they
+need to work in and articles like this one are much appreciated. Its
+just that every time I dive in there, I find myself having to learn to
+swim every time, it really feels like its more convoluted than it needs
+to be. [...]</p>
+	<p class="alignright"><small>Pingback by <a href="http://leftshore.wordpress.com/2006/11/13/did-javascript-need-to-be-this-confusing/" rel="external nofollow" class="url">Did JavaScript need to be this confusing? « Leftshore</a> — November 13, 2006 <a href="#comment-15137">#</a> </small></p>
+	</li>
+
+
+
+
+
+	<li id="comment-15145" class="class_comment1">
+	<p>“new Function” makes sense in some cases. For example it is possible
+ to create optimized functions with this e.g. executing command1 or
+command2. </p>
+<p><code><br>
+var s = sometest() ? "command1();" : "command2();";<br>
+var f = new Function(s);<br>
+</code></p>
+<p>This is not possible with pure function expressions. In this case you
+ can only do this using if-constructs. But they don’t have the same
+performance. </p>
+<p><code><br>
+var f = function() {<br>
+  sometest() ? command1() : command2();<br>
+}<br>
+</code></p>
+<p>IMO “new Function” is also the better choice compared to eval() in
+many cases, because it allows you to evaluate and execute code without
+joining it with the current scope. This should perform better.</p>
+	<p class="alignright"><small>Comment by <a href="http://qooxdoo.org/" rel="external nofollow" class="url">Sebastian Werner</a> — November 13, 2006 <a href="#comment-15145">#</a> </small></p>
+	</li>
+
+
+
+
+
+	<li id="comment-15146" class="class_comment2">
+	<p>No, it still doesn’t make sense. </p>
+<p>var f = sometest() ?<br>
+    function () {command1()} :<br>
+    function () {command2()};</p>
+	<p class="alignright"><small>Comment by <a href="http://360.yahoo.com/douglascrockford" rel="external nofollow" class="url">Douglas Crockford</a> — November 13, 2006 <a href="#comment-15146">#</a> </small></p>
+	</li>
+
+
+
+
+
+	<li id="comment-15163" class="class_comment1">
+	<p>[...] JavaScript, We Hardly new Ya » Yahoo! User Interface Blog (tags: javascript optimization) [...]</p>
+	<p class="alignright"><small>Pingback by <a href="http://www.barelyfitz.com/blog/archives/2006/11/13/473/" rel="external nofollow" class="url">BarelyBlogging » Blog Archive » links for 2006-11-14</a> — November 13, 2006 <a href="#comment-15163">#</a> </small></p>
+	</li>
+
+
+
+
+
+	<li id="comment-15166" class="class_comment2">
+	<p>Nice post with an especially good encouragement to learn the new way
+ of doing things.  Having written enough of Javascript 1.2 type scripts I
+ believe that embracing prototypes and JSON is a much nicer way to code
+(that has plenty of maintainability advantages too).</p>
+<p>One question though (and this is something mainly regarding any of
+the YUI and other Yahoo! JSON stuff): why aren’t JSON objects properly
+quoted?  There’s an RFC (<a href="http://www.ietf.org/rfc/rfc4627.txt" rel="nofollow">http://www.ietf.org/rfc/rfc4627.txt</a>) that defines JSON and according to it one should use double-quotes around JSON properties.</p>
+<p>eg Foo.prototype = {<br>
+“init”: function() { … }<br>
+}</p>
+<p>Maybe it’s that the RFC is too new or maybe its that it’s not gotten
+enough press.  Either way I encourage the conformance to it for
+future-proofing and simplifiying debugging.</p>
+	<p class="alignright"><small>Comment by <a href="http://blog.josh-peters.name/" rel="external nofollow" class="url">Josh Peters</a> — November 13, 2006 <a href="#comment-15166">#</a> </small></p>
+	</li>
+
+
+
+
+
+	<li id="comment-15167" class="class_comment1">
+	<p>By the way, Dave’s post (<a href="http://yuiblog.com/blog/2006/11/13/javascript-we-hardly-new-ya/#comment-15132" rel="nofollow">http://yuiblog.com/blog/2006/11/13/javascript-we-hardly-new-ya/#comment-15132</a>) seemed to have an extra code element in it making the rest of the page look bad.</p>
+	<p class="alignright"><small>Comment by <a href="http://blog.josh-peters.name/" rel="external nofollow" class="url">Josh Peters</a> — November 13, 2006 <a href="#comment-15167">#</a> </small></p>
+	</li>
+
+
+
+
+
+	<li id="comment-15189" class="class_comment2">
+	<p><strong>new…</strong></p>
+<p>…</p>
+	<p class="alignright"><small>Trackback by <a href="http://sbserve/DotText/simon/archive/2006/11/14/13449.aspx" rel="external nofollow" class="url">simon's ramblings</a> — November 13, 2006 <a href="#comment-15189">#</a> </small></p>
+	</li>
+
+
+
+
+
+	<li id="comment-15211" class="class_comment1">
+	<p>From Flanagan’s 5th edition</p>
+<p>“A last, very important point about the Function() constructor is
+that the functions it creates do not use lexical scoping; instead, they
+are always compiled as if they were top-level functions…”</p>
+<p>I can imagine this might come in handy some time to create a function
+ with a clean scope chain. Could circular event handler memory leaks in
+IE be avoided by using the constructor function instead of a function
+literal? Maybe not the most efficient way to do this but it is nice to
+have options in case some new browser bug comes along that can only be
+solved by using the function constructor function. One day that might be
+ true for some other constructors like String and Array.</p>
+	<p class="alignright"><small>Comment by Peter Michaux — November 13, 2006 <a href="#comment-15211">#</a> </small></p>
+	</li>
+
+
+
+
+
+	<li id="comment-15213" class="class_comment2">
+	<p>[...] One of the article is by Douglas Crockford that talks about
+when to use the new operator and avoiding the use of Number, String
+intrinsic objects when not necessary. The other article is by Mark
+Wilton on writing efficient JavaScript. [...]</p>
+	<p class="alignright"><small>Pingback by <a href="http://gopalarathnam.com/weblog/2006/11/14/some-very-nice-javascript-posts.html" rel="external nofollow" class="url">gopalarathnam.com - Some very nice JavaScript posts</a> — November 13, 2006 <a href="#comment-15213">#</a> </small></p>
+	</li>
+
+
+
+
+
+	<li id="comment-15220" class="class_comment1">
+	<p>Douglas Crockford said:</p>
+<p>[quote]<br>
+  No, it still doesn’t make sense.</p>
+<p>  var f = sometest() ?<br>
+    function () {command1()} :<br>
+    function () {command2()};<br>
+[/quote]</p>
+<p>how about:</p>
+<p>  var f = someTest()? command1 : command2;<br>
+  f();</p>
+<p>I always wondered why the JS gurus only use new for constructors,
+I’ve been following that principle for some time – now I know why!</p>
+<p>–<br>
+Fred</p>
+	<p class="alignright"><small>Comment by OzFred — November 13, 2006 <a href="#comment-15220">#</a> </small></p>
+	</li>
+
+
+
+
+
+	<li id="comment-15234" class="class_comment2">
+	<blockquote cite="Douglas Crockford"><p>No, it still doesn’t make sense.</p>
+<p><code>var f = sometest() ?<br>
+function () {command1()} :<br>
+function () {command2()}; </code></p></blockquote>
+<p>And we could have an even better code in this case with something like</p>
+<p><code>var f = sometest() ?<br>
+        command1 :<br>
+        command2;</code></p>
+	<p class="alignright"><small>Comment by Masklinn — November 13, 2006 <a href="#comment-15234">#</a> </small></p>
+	</li>
+
+
+
+
+
+	<li id="comment-15249" class="class_comment1">
+	<p><strong>JavaScript, We Hardly new Ya…</strong></p>
+<p>When to use, or rather when not to use the new operator in JavaScript…</p>
+	<p class="alignright"><small>Trackback by <a href="http://virtuelvis.com/archives/2006/11/javascript-we-hardly-new-ya" rel="external nofollow" class="url">Arve Bersvendsen</a> — November 14, 2006 <a href="#comment-15249">#</a> </small></p>
+	</li>
+
+
+
+
+
+	<li id="comment-15321" class="class_comment2">
+	<p>Pretty good stuff to learn.</p>
+	<p class="alignright"><small>Comment by <a href="http://milo.peety-passion.com/" rel="external nofollow" class="url">milo317</a> — November 14, 2006 <a href="#comment-15321">#</a> </small></p>
+	</li>
+
+
+
+
+
+	<li id="comment-15345" class="class_comment1">
+	<p>I’ve hardly programmed in JavaScript, even though I like to program
+and do so almost every day. Your post is quite helpful for someone like
+me, who gets the point of your ideas.</p>
+<p>Thanks and nice job.</p>
+	<p class="alignright"><small>Comment by Joao — November 14, 2006 <a href="#comment-15345">#</a> </small></p>
+	</li>
+
+
+
+
+
+	<li id="comment-15380" class="class_comment2">
+	<p>[...] Douglas Crockford, JavaScript genius, presents an article on
+the use of "new" when creating objects in JavaScript. Excellent read
+that will make your code better. I know I’ll use his &lt;select&gt; code
+ somewhere. [...]</p>
+	<p class="alignright"><small>Pingback by <a href="http://blog.amodernfable.com/2006/11/14/using-quotnew-javascript/" rel="external nofollow" class="url">A Modern Fable (AJM) » Blog Archive » Using &amp;quot;new" JavaScript</a> — November 14, 2006 <a href="#comment-15380">#</a> </small></p>
+	</li>
+
+
+
+
+
+	<li id="comment-15493" class="class_comment1">
+	<p>[...] JavaScript, We Hardly new Ya » Yahoo! User Interface Blog [...]</p>
+	<p class="alignright"><small>Pingback by <a href="http://blog.dotbot.net/articles/2006/11/15/del-icio-us-bookmarks-2006-11-14" rel="external nofollow" class="url">del.icio.us bookmarks - 2006-11-14</a> — November 14, 2006 <a href="#comment-15493">#</a> </small></p>
+	</li>
+
+
+
+
+
+	<li id="comment-15596" class="class_comment2">
+	<p>I do not agree. Using new emphazises the use of a new instance of an object.<br>
+I think:<br>
+var a=new Object();</p>
+<p>Is much better than:<br>
+var a={};</p>
+<p>You right that javascript is not a truely object-oriented language.
+But this does not mean using the new keyword is something stupid.
+Sometimes it is even better.<br>
+I think it also depends on your coding style.</p>
+	<p class="alignright"><small>Comment by Tjeerd Wolterink — November 15, 2006 <a href="#comment-15596">#</a> </small></p>
+	</li>
+
+
+
+
+
+	<li id="comment-15604" class="class_comment1">
+	<p>new Object() is in no way better than {}, except that it might be
+more comfortable for programmers who want to be unaware of the language
+they are working in.</p>
+<p>I did not say that JavaScript was not object-oriented. It is object oriented. But it is not classical.</p>
+<p>I did not use the word stupid to describe the use of new. My advice
+on new is to always use it when it is required, and to never use it when
+ it isn’t.</p>
+	<p class="alignright"><small>Comment by <a href="http://www.jslint.com/" rel="external nofollow" class="url">Douglas Crockford</a> — November 15, 2006 <a href="#comment-15604">#</a> </small></p>
+	</li>
+
+
+
+
+
+	<li id="comment-15613" class="class_comment2">
+	<p>Thanks for this clear and instructive article. The comments are good too.</p>
+	<p class="alignright"><small>Comment by <a href="http://techrageo.us/" rel="external nofollow" class="url">bill</a> — November 15, 2006 <a href="#comment-15613">#</a> </small></p>
+	</li>
+
+
+
+
+
+	<li id="comment-15875" class="class_comment1">
+	<p>BTW, all comments after <a href="http://yuiblog.com/blog/2006/11/13/javascript-we-hardly-new-ya/#comment-15132" rel="nofollow">http://yuiblog.com/blog/2006/11/13/javascript-we-hardly-new-ya/#comment-15132</a> are unreadable in IE.</p>
+	<p class="alignright"><small>Comment by A — November 16, 2006 <a href="#comment-15875">#</a> </small></p>
+	</li>
+
+
+
+
+
+	<li id="comment-15912" class="class_comment2">
+	<p>Why, why, WHY people write comments others can’t see or read? How
+you create comments that are too long to fit in the area allowed?!? And
+why you do it even if you know some ‘fine trick’ to do so? Just to show
+others you CAN do it?!? Doesn’t make sense – at least not to me.</p>
+<p>I have been typing here loooong sentences but it has wrapped nicely –
+ at least when typed – but I’m interested to see what it will look like
+when published. Or IF published…  :-)</p>
+<p>The original article was just GREAT! Good job.<br>
+Thanks and keep up the good work!</p>
+	<p class="alignright"><small>Comment by Some Finnish — November 16, 2006 <a href="#comment-15912">#</a> </small></p>
+	</li>
+
+
+
+
+
+	<li id="comment-15995" class="class_comment1">
+	<p>WRT to using new Function(string), I’ve found only one decent usage
+for it, and it had nothing to do with client-side coding…I used it in a
+classic ASP system where I was loading functionality from text files in
+order to execute in a specific context.  Another words, like a
+controlled eval.</p>
+<p>The point (for me anyways) is the there is enough of a use case for
+it that I feel it should definitely remain in the lang, although I
+definitely agree with Doug–it’s too easy to abuse by those who don’t
+know the consequences of usage.</p>
+<p>Also, I’m not sure I agree with the factory approach you demonstrate
+as a replacement for defining and creating an object on the fly (i.e.
+new (function(){ … })(); yes, you avoid the overhead of a prototype but
+the nature of the construct means it’s unlikely this will be abused via
+lots of calls (unless someone does something ridiculous like do this in a
+ loop or something).  There is another *slight* benefit to using new in
+that situation: you can then mix objects into it’s prototype, if you
+were feeling adventurous.  Though at that point its also a little
+ridiculous.</p>
+<p>So many little points, so little time.</p>
+	<p class="alignright"><small>Comment by <a href="http://www.dept-z.com/" rel="external nofollow" class="url">Tom Trenka</a> — November 17, 2006 <a href="#comment-15995">#</a> </small></p>
+	</li>
+
+
+
+
+
+	<li id="comment-16050" class="class_comment2">
+	<p>OK, maybe my example was a little bad. Normally, in the simple case I
+ mentioned this maybe make no sense. But what, if the code is much more
+complex e.g. you generate functions for different scenarios
+automatically. Then it’s better to “compile” the result with “new
+Function” instead of doing these things inside the execution. For
+example qooxdoo contains a so named property implementation, where the
+API itself generates setter and getter pairs depending on the
+configuration of the property. It’s much better to use “new Function”
+here instead of compute the the stuff each time a setter is executed.
+The new system we currently plan have a much better performance than the
+ version without “new Function” previously used.</p>
+	<p class="alignright"><small>Comment by <a href="http://qooxdoo.org/" rel="external nofollow" class="url">Sebastian Werner</a> — November 17, 2006 <a href="#comment-16050">#</a> </small></p>
+	</li>
+
+
+
+
+
+	<li id="comment-17315" class="class_comment1">
+	<p>Is there a reason then that this construct is used several times in many different places in the YUI! Library?</p>
+<p>YAHOO.util.AnimMgr = new function() {…<br>
+YAHOO.util.Bezier = new function() {…<br>
+YAHOO.widget.DateMath = new function() {…</p>
+	<p class="alignright"><small>Comment by Scott — November 24, 2006 <a href="#comment-17315">#</a> </small></p>
+	</li>
+
+
+
+
+
+	<li id="comment-17785" class="class_comment2">
+	<p>“Do as I say, not as I do”</p>
+	<p class="alignright"><small>Comment by <a href="http://grimboy.co.uk/" rel="external nofollow" class="url">Frankie Robertson</a> — November 27, 2006 <a href="#comment-17785">#</a> </small></p>
+	</li>
+
+
+
+
+
+	<li id="comment-19556" class="class_comment1">
+	<p>good article to me!!! i think {} is good to do use for<br>
+saving bytes! and new Function() should better not use<br>
+ except peculiar instance</p>
+	<p class="alignright"><small>Comment by <a href="http://www.flyphp.com/" rel="external nofollow" class="url">fly</a> — December 4, 2006 <a href="#comment-19556">#</a> </small></p>
+	</li>
+
+
+
+
+
+	<li id="comment-31927" class="class_comment2">
+	<p>Well, you definitely have a point with array and object initialisers
+ or literals for primitive types, but there is a quite strong argument
+in favour of <code>new Function</code>, I think. The reason is: function
+ declarations and function initialisers are locally scoped, in other
+words create closures. But <code>new Function</code> allows the creation
+ of a globally scoped function object in a nested scope, so no closure
+of the current scope is created. Practical if you want to get around
+some common memory leaks.</p>
+<p>Also, <code>new Function</code> can be used for example as an alternative to <code>eval</code> if you want to emulate <code>Function.prototype.apply </code> in ie5.</p>
+	<p class="alignright"><small>Comment by liorean — January 13, 2007 <a href="#comment-31927">#</a> </small></p>
+	</li>
+
+
+
+
+
+	<li id="comment-49563" class="class_comment1">
+	<p>;(sometest() ? command1 : command2)(arg1, arg2, arg3)</p>
+<p>This coding style makes semicolons omission no longer an option.</p>
+	<p class="alignright"><small>Comment by Theodor Zoulias — February 16, 2007 <a href="#comment-49563">#</a> </small></p>
+	</li>
+
+
+
+
+
+	<li id="comment-70847" class="class_comment2">
+	<p><strong>Javascript Best Practices…</strong></p>
+<p>A tentative repository of JavaScript bestpractices with examples
+(WORK IN PROGRESS). @TODO: Cleanup and reorder&nbsp;  1. Avoid global
+functions or variables It is easy to forget how/where these are/were
+instantiated…….</p>
+	<p class="alignright"><small>Trackback by <a href="https://intranet.iacsam.com/wiki/display/SiteEng/Javascript+Best+Practices" rel="external nofollow" class="url">Confluence: Ask Site Engineering</a> — March 20, 2007 <a href="#comment-70847">#</a> </small></p>
+	</li>
+
+
+
+
+
+	<li id="comment-94635" class="class_comment1">
+	<p>Good stuff! I also just watched the Advanced JavaScript videos on <a href="http://rds.yahoo.com/_ylt=A0WTQ0QVtCdGNhABGFUBP88F/SIG=123ao8iag/EXP=1177093525/**http%3A//video.yahoo.com/video/group%3Fgid=133414" rel="nofollow"><br>
+YUI Theater</a> and feel this is a lot of great info<br>
+to absorb.</p>
+<p>Couple of questions tho…<br>
+Firstly, without new (as you state) you are giving up the prototype
+object. But I thought one very real benefit of the prototype object is
+to assign methods to them once and have them shared by all, thus saving
+space. It seems your recommended obj literal notation requires the
+repeated inclusion of inline functions for every object created. I
+presume you consider this an acceptable trade off?</p>
+<p>Secondly, how do you represent static variable/methods (public or private) without the use of new?</p>
+	<p class="alignright"><small>Comment by Darryl Stoflet — April 19, 2007 <a href="#comment-94635">#</a> </small></p>
+	</li>
+
+
+
+
+
+	<li id="comment-116592" class="class_comment2">
+	<p>[...] JavaScript, We Hardly new Ya » Yahoo! User Interface Blog (tags: javascript optimization performance) [...]</p>
+	<p class="alignright"><small>Pingback by <a href="http://www.shawiz.net/2007/links-for-2007-05-16/" rel="external nofollow" class="url">Shall We Zen » links for 2007-05-16</a> — May 16, 2007 <a href="#comment-116592">#</a> </small></p>
+	</li>
+
+
+
+
+
+	<li id="comment-134756" class="class_comment1">
+	<p>For all I know there’s no need to use ‘new’ for new functions. Just
+‘Function’ will do. I use it to convert a function string (for example
+from a JSON-like string) to a real function. Like this:</p>
+<p>var freshFunction = function(args,body) {<br>
+  if (args.length&gt;0) {<br>
+   var sArgs = args.join(‘,’);<br>
+  } else {<br>
+   var sArgs = ”;<br>
+  }<br>
+  return Function(sArgs,body);<br>
+}</p>
+<p>var fnFromString = function(fnStr) {<br>
+   var f1  = f2 = fnStr.replace(/\n|\r/g,”),<br>
+       f1a = (f1.split(/\{/i))[0],<br>
+       f1b = (f1a.split(/\(/i))[1].replace(/\)/,”).trim();<br>
+   if (f1b.length&gt;0){<br>
+    var fx = f1b.split(‘,’);<br>
+   } else {<br>
+    var fx = [];<br>
+   }<br>
+   // get function body<br>
+   f2 = f2.replace(/(^function.+\{)(.+)(\}$)/i,”$2?);<br>
+   return freshFunction(fx,f2);<br>
+}</p>
+<p>(sorry, perhaps this is posted twice: I am not sure the post came
+trough, firefox told me the connection was reset after clicking the
+submit button.)</p>
+	<p class="alignright"><small>Comment by <a href="http://www.nicon.nl/" rel="external nofollow" class="url">Renzo Kooi</a> — June 3, 2007 <a href="#comment-134756">#</a> </small></p>
+	</li>
+
+
+
+
+
+	<li id="comment-134768" class="class_comment2">
+	<p>A bit off topic perhaps, but may be interesting. I slightly modified Douglas Crockfords ‘object’ function to this:<br>
+<code><br>
+function object(o) {<br>
+   function F(){}<br>
+   F.prototype = o;<br>
+   <em>return F.prototype;</em><br>
+}</code><br>
+Now I am able to do this:<br>
+<code><br>
+function someConstructor() {<br>
+ [code]<br>
+ <em>return object(this);</em><br>
+}</code><br>
+And point to someConstructor without using 'new' or 'object', like this:<br>
+<code><br>
+var myObject = someConstructor();</code><br>
+See an (fairly useless) example @ <a href="http://www.nicon.nl/nohtml2/nohtmlx.html" title="example" rel="nofollow">My website</a></p>
+	<p class="alignright"><small>Comment by <a href="http://www.nicon.nl/" rel="external nofollow" class="url">Renzo</a> — June 3, 2007 <a href="#comment-134768">#</a> </small></p>
+	</li>
+
+
+
+
+
+	<li id="comment-136094" class="class_comment1">
+	<p>In addition to my last comment, I carried it one step further and augmented Object like this:<br>
+<code><br>
+<strong>Object.prototype.toObject</strong> = function() {<br>
+    var object = function(o) {<br>
+     function F(){}<br>
+     F.prototype = o;<br>
+     return F.prototype;<br>
+    }<br>
+    return object(this);<br>
+}</code></p>
+<p>So now I am able to rewrite someConstructor like this:<br>
+<code><br>
+function someConstructor() {<br>
+[code]<br>
+return <strong>this.toObject()</strong>;<br>
+}</code></p>
+<p>Worked in my code, but not sure if this could have unforeseen consequences. Anyone has an idea about that?</p>
+	<p class="alignright"><small>Comment by Renzo Kooi — June 5, 2007 <a href="#comment-136094">#</a> </small></p>
+	</li>
+
+
+
+
+
+	<li id="comment-155237" class="class_comment2">
+	<p>Dear Scott,</p>
+<p><code><br>
+new function(...) { ... }<br>
+</code></p>
+<p>is (mostly) equivalent to</p>
+<p><code><br>
+(function(...) { ... }) ()<br>
+</code></p>
+<p>(The function is defined and evaluated in-place, oftentimes to create
+ private, closed-over data, and oftentimes to do a switch against the
+current browser or some other environment feature to determine what
+function you actually want to use later on, instead of constantly
+testing the environment every time you call that function.)</p>
+<p>Evaluation in-place using parentheses is more efficient, but
+syntactically ugly, and it’s not clear until the very end that it’s
+being evaluated in-place. Using the new keyword is less efficient and
+less immediately obvious unless you’re familiar with the style, but its
+syntax is nicer and, assuming you’ve seen the style before, it’s clear
+up-front that the function is being defined and evaluated in-place.</p>
+	<p class="alignright"><small>Comment by Jay — July 10, 2007 <a href="#comment-155237">#</a> </small></p>
+	</li>
+
+
+
+
+
+	<li id="comment-232489" class="class_comment1">
+	<p>[...] JavaScript, We Hardly new Ya [...]</p>
+	<p class="alignright"><small>Pingback by <a href="http://www.ganchiku.com/2007/11/module_pattern_looks_good.html" rel="external nofollow" class="url">GANCHIKU.com » JavaScript Module Pattern??????????????</a> — November 17, 2007 <a href="#comment-232489">#</a> </small></p>
+	</li>
+
+
+
+
+
+	<li id="comment-532613" class="class_comment2">
+	<p>Sorry Douglas,</p>
+<p>Is it fair to say that:</p>
+<p>var a=new Object() === var a={} </p>
+<p>By that I mean there is absolutely no benefit/drawback/difference at
+all between them? there is no unnecessary object wrappers created, etc.
+thus making the choice purely based on syntax preference?</p>
+	<p class="alignright"><small>Comment by John T. — December 20, 2008 <a href="#comment-532613">#</a> </small></p>
+	</li>
+
+
+
+
+
+	<li id="comment-577824" class="class_comment1">
+	<p>While I agree that using the “shorthand” (JSON) version of creating
+arrays is desirable, it has one flaw that I have never seen discussed on
+ any page like this…</p>
+<p>Using [] does not allow you to set the initial size of an array!!!</p>
+<p>You usually don’t have to worry about setting the initial size of an
+arry, so the shorthand version works well. But there are times when it
+is necessary to set the initial size of an array; in that case, you have
+ to use the “new Array(x)” format (where x is the number of elements).</p>
+<p>(<br>
+There is another way to set the initial array size but I think it’s even more ugly and confusing…<br>
+var x = [];<br>
+x[100] = 0;<br>
+)</p>
+<p>For most scenarios, the shorthand version is desirable but in
+situations where you have to set the array size, using new Array() is
+really your only option.</p>
+	<p class="alignright"><small>Comment by Richard — February 25, 2009 <a href="#comment-577824">#</a> </small></p>
+	</li>
+
+
+
+
+
+	<li id="comment-577830" class="class_comment2">
+	<p>Arrays in this language do not have sizes as they do in most other
+languages, so there is little point in doing what you are demanding.</p>
+<p>I have never had occasion to write</p>
+<p>    var x = [];<br>
+    x.length = 100;</p>
+	<p class="alignright"><small>Comment by <a href="http://javascript.crockford.com/" rel="external nofollow" class="url">Douglas Crockford</a> — February 26, 2009 <a href="#comment-577830">#</a> </small></p>
+	</li>
+
+
+
+
+
+	<li id="comment-579201" class="class_comment1">
+	<p>Doug: “Arrays in this language do not have sizes…”</p>
+<p>Wait, what? According to ECMA-262(3) § 15.4, every Array has an
+invariant property called “length” that is necessarily the number of
+non-inherited properties + 1, such that if a new property is added,
+“length” is increased, and if length is set to less number of
+non-inherited properties + 1, properties are deleted. And according to
+§15.4.2.2, the “new Array(len)” form initializes a new object and sets
+“length” to “len”.</p>
+<p>One would think that implementors would take advantage of this to
+pre-allocate a list of size (object size*len) when the “new Array(len)”
+form is used. I haven’t profiled the memory paging or GC, but just on
+speed, a micro-benchmark testing the literal constructor versus the “new
+ Array(len)” form showed the literal form to be equally fast / minutely
+faster in both jsc (from WebKit, used in Safari and Google Chrome) and
+smjs (from SpiderMonkey, used in stable Gecko).</p>
+<p>Test and timings: <a href="http://pastie.org/421955" rel="nofollow">pastie</a></p>
+<p>So, despite what one might intuitively expect, there doesn’t seem to
+be much difference in speed between the literal form and the sized
+constructor form.</p>
+<p>Ps. JSCore is faaaast(!) (seems too fast, did the JIT optimize away
+the inner loops or something!??). I’m curious how TraceMonkey will
+compare.</p>
+	<p class="alignright"><small>Comment by MonkeeSage — March 20, 2009 <a href="#comment-579201">#</a> </small></p>
+	</li>
+
+
+
+
+
+	<li id="comment-579517" class="class_comment2">
+	<p>After thinking about this a bit, it seems I’ve incorrectly described
+ the constraint placed on the length property of Array objects. It is
+*not* the case that length “is necessarily the number of non-inherited
+properties + 1?. The length property is only increased if the number of
+non-inherited properties + 1 &gt; the current value of length, in which
+case length takes that value.</p>
+<p>Now somebody please correct me if I’m wrong, but this seems useless,
+*except* as a shortcut for implementors to preallocate or resize the
+backing data store and retreive the size of the store without itterating
+ all the elements. But they don’t seem to be using it that way. In the
+benchmark above, there should be a number of reallocation / resize
+oprtations for the inner loop with the literal constructor form. Even if
+ the backing store is initialized to some default size &gt; 0, and grows
+ exponentially every time there is an attempt to insert past the end,
+there should at least be a few reallocate / resize ops for 500
+insertions. And that would presumably have a speed impact (even if
+slight) over 10,000 iterations. But the timings don’t show any speed
+difference over the signal:noise threshold as compared with the
+constructor form using the new keyword with an initial length.</p>
+<p>So if this dispairity between the actual number of non-inherited
+properties and the length property, and the constructor form with a
+default length, are not being utilized by implementors for optimization
+purposes–then what use are they? It seems like, without some kind of
+practical use, this is simply a chance for faux pas like this:</p>
+<p>var arry = new Array (20);</p>
+<p>// …stuff you thought initialized the array, but didn’t</p>
+<p>for (var i = 0; i &lt; arry.length; ++i) {<br>
+  do_stuff (arry[i].foo); // throws<br>
+}</p>
+<p>Also, slightly confusingly, mutating methods like push and pop
+*always* increment and decrement the length property, and operate on the
+ index relative to the length propery (rather than the actual index of
+the last initialized element).</p>
+	<p class="alignright"><small>Comment by MonkeeSage@gmail.com — March 23, 2009 <a href="#comment-579517">#</a> </small></p>
+	</li>
+
+
+
+
+
+	<li id="comment-584722" class="class_comment1">
+	<p>I love this pattern but I have the same doubts Darryl Stoflet has.</p>
+	<p class="alignright"><small>Comment by <a href="http://www.danielcadenas.com/" rel="external nofollow" class="url">Daniel Cadenas</a> — September 22, 2009 <a href="#comment-584722">#</a> </small></p>
+	</li>
+
+
+
+
+
+	<li id="comment-588504" class="class_comment2">
+	<p>A string object and a string value are not the same thing:</p>
+<p><code><br>
+js&gt; p = "Foo"<br>
+Foo<br>
+js&gt; p.weight = 42<br>
+42<br>
+js&gt; p.weight   // Returns undefined<br>
+js&gt; q = new String("Foo")<br>
+Foo<br>
+js&gt; q.weight = 42<br>
+42<br>
+js&gt; q.weight<br>
+42<br>
+</code></p>
+<p>The string value cannot have new properties. The same thing is valid for other types.</p>
+	<p class="alignright"><small>Comment by <a href="http://inf.ufrgs.br/%7Evbuaraujo" rel="external nofollow" class="url">Vítor De Araújo</a> — February 23, 2010 <a href="#comment-588504">#</a> </small></p>
+	</li>
+
+
+
+
+
+	<li id="comment-591005" class="class_comment1">
+	<p>Hello, do you mind if I use some of your content on <a href="http://www.basicwebdesign.co.cc/" rel="nofollow">http://www.basicwebdesign.co.cc</a> ? The credit stays with you along with a link back to your site! Thanks</p>
+	<p class="alignright"><small>Comment by <a href="http://www.basicwebdesign.co.cc/" rel="external nofollow" class="url">jay</a> — April 27, 2010 <a href="#comment-591005">#</a> </small></p>
+	</li>
+
+
+
+
+
+	<li id="comment-591019" class="class_comment2">
+	<p>Jay — YUIBlog content can be quoted and referred to under the usual
+fair use guidelines, but no, we don’t permit republishing content in
+whole or in part. -Eric</p>
+	<p class="alignright"><small>Comment by <a href="http://ericmiraglia.com/" rel="external nofollow" class="url">Eric Miraglia</a> — April 28, 2010 <a href="#comment-591019">#</a> </small></p>
+	</li>
+
+
+
+
+
+	<li id="comment-594467" class="class_comment1">
+	<p>Good stuff! I also just watched the Advanced JavaScript videos on<br>
+YUI Theater and feel this is a lot of great info<br>
+to absorb.</p>
+<p>Couple of questions tho…<br>
+Firstly, without new (as you state) you are giving up the prototype
+object. But I thought one very real benefit of the prototype object is
+to assign methods to them once and have them shared by all, thus saving
+space. It seems your recommended obj literal notation requires the
+repeated inclusion of inline functions for every object created. I
+presume you consider this an acceptable trade off?</p>
+<p><a href="http://java.pakcarid.com/default.aspx?sub=25&amp;Sls=25" rel="nofollow">http://java.pakcarid.com/default.aspx?sub=25&amp;Sls=25</a></p>
+<p>Secondly, how do you represent static variable/methods (public or private) without the use of new?</p>
+	<p class="alignright"><small>Comment by <a href="http://java.pakcarid.com/default.aspx?sub=25&amp;Sls=25" rel="external nofollow" class="url">lois</a> — September 24, 2010 <a href="#comment-594467">#</a> </small></p>
+	</li>
+
+
+
+
+
+	<li id="comment-596365" class="class_comment2">
+	<p>[...] that could cause this to be bound to the global object. For
+example, if you forget to provide the new prefix when calling a
+constructor function, the constructor’s this will be bound unexpectedly
+[...]</p>
+	<p class="alignright"><small>Pingback by <a href="http://www.yuiblog.com/blog/2010/12/14/strict-mode-is-coming-to-town/" rel="external nofollow" class="url">Strict Mode Is Coming To Town » Yahoo! User Interface Blog (YUIBlog)</a> — December 14, 2010 <a href="#comment-596365">#</a> </small></p>
+	</li>
+
+
+
+
+</ol>
+</div>
+</div></body></html>

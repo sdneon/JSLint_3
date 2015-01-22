@@ -1,0 +1,652 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"><head profile="http://gmpg.org/xfn/11">
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+	<title>for in Intrigue » Yahoo! User Interface Blog (YUIBlog)</title>
+<!-- 	<title>Yahoo! User Interface Blog (YUIBlog) &raquo; for in Intrigue</title> -->
+	 <meta http-equiv="Content-Encoding" content="gzip">
+<meta http-equiv="Accept-Encoding" content="gzip, deflate">
+	<meta name="generator" content="WordPress 3.0.4"> <!-- leave this for stats please -->
+	<!--
+	<style type="text/css" media="screen">
+		@import url(http://www.yuiblog.com/blog/wp-content/themes/yuiblog_v1/style.css);
+	</style>
+	-->
+<style>
+body {
+    font-family: Arial !important;
+}
+</style>
+</head>
+
+<body>
+<div id="content">
+
+	<div id="header" onclick="location.href='http://www.yuiblog.com/blog';" style="cursor: pointer;">
+		<h1><a href="http://www.yuiblog.com/blog">Yahoo! User Interface Blog (YUIBlog)</a></h1>
+	</div>
+
+<!-- end header -->
+	<div id="bloque">
+
+		<div id="noticias">
+
+		<!--don't suppress WP formatting-->
+			<div class="entrada">
+				<h2 id="post-45"><a href="http://www.yuiblog.com/blog/2006/09/26/for-in-intrigue/" rel="bookmark" title="Permanent Link to for in Intrigue">for in Intrigue</a></h2>
+				<small>September 26, 2006 at 9:21 am by Douglas Crockford | In <a href="http://www.yuiblog.com/blog/category/development/" title="View all posts in Development" rel="category tag">Development</a> | <a href="#comments" title="Comment on for in Intrigue">33 Comments</a></small>
+
+			<p>One of JavaScript’s best features is the ability to augment the
+built-in types. If we want to add a new method to a type, we simply
+assign a function to the type’s <code>prototype</code>. So, if I think that JavaScript strings should have a <code>trim</code> method (and they should) then I can write</p>
+<pre>String.prototype.trim = function () {
+    return this.replace( /^\\s*(\\S*(\\s+\\S+)*)\\s*$/, "$1");
+}</pre>
+<p>Now all of my strings have a <code>trim</code> method, even strings that were constructed before I did the augmentation. </p>
+<p>We can do this for any of the built-in types: <code>Object</code>, <code>Array</code>, <code>Function</code>, <code>Number</code>, <code>String</code>, and <code>Boolean</code>.
+ This is a source of great expressive power which can help JavaScript
+realize its potential as dynamic, functional, object-oriented language.</p>
+<p>JavaScript is, sadly, also a flawed language, and one of its flaws interacts badly with augmentation of <code>Object</code>. But fortunately, we can mitigate the problem.</p>
+<p>The flaw is that the <code>for in</code> statement, which can
+enumerate the keys stored in an object, produces all of the keys in the
+object’s prototype chain, not just the keys in the object itself. This
+causes inherited methods to appear in the enumeration, which is bad. If
+would have been nicer if JavaScript did not contain this flaw, but
+fortunately we can program around it.</p>
+<p>In all of the <a href="http://developer.yahoo.com/yui/articles/gbs/gbs_browser-chart.html">A Grade browsers</a>, we should always write <code>for in</code> statements in this form:</p>
+<pre>for (name in obj) {
+    if (obj.hasOwnProperty(name)) {
+        ...
+    }
+}</pre>
+<p>It is deeply annoying that we have to include the extra <code>if</code>
+ statement to filter out the extraneous values. It would seem better to
+ignore the flaw and code in ignorance. This is possible if you can
+guarantee that your code will never interact with programs that will
+augment <code>Object.prototype</code>. But as we get better at mashups and code sharing, ignorance produces brittleness. The standard describes an augmentable <code>Object.prototype</code>. Ignore standards at your own peril. </p>
+<p>The <code>hasOwnProperty</code> method is useful in making
+JavaScript’s objects act as general containers. For example, suppose you
+ are keeping a list of key words where each word is used as a key. We
+can quickly determine if a word is in our list: </p>
+<pre>function check_word(word) {
+    return !!words[word];
+}</pre>
+<p>Unfortunately, the function can produce the wrong result if the <code>word</code> is <code>"constructor"</code> because there will be a <code>constructor</code> property in <code>words</code>‘s prototype chain. We can use <code>hasOwnProperty</code> to filter out the chain.</p>
+<pre>function check_word(word) {
+    return words.hasOwnProperty(word);
+}</pre>
+<p>One of the unfortunate consequences of the language having gone
+through multiple versions is that not every JavaScript environment
+provides the <code>hasOwnProperty</code> method. IE 5.0 and Safari 1.3
+do not. If your program has to run in those as well, then there is an
+older equivalent that is almost as good, in which we filter out function
+ values. </p>
+<pre>for (name in obj) {
+    if (typeof obj[name] !== 'function') {
+        ...
+    }
+}</pre>
+<pre>function check_word(word) {
+    return typeof words[word] !== 'function';
+}</pre>
+<p>Would it be better if JavaScript were not flawed? Absolutely. But it
+is flawed, and you can only get so far by pretending that it isn’t. </p>
+
+			<div class="feedback"></div>
+			</div>
+
+
+
+<h2 id="comments">33 Comments
+</h2>
+
+
+<p>
+
+</p>
+
+<ol id="commentlist">
+
+
+
+	<li id="comment-8649" class="class_comment1">
+	<p>typeof obj[name] !== ‘function’</p>
+<p>You mean:</p>
+<p>typeof obj[name] != ‘function’</p>
+<p>(one to many equal signs).</p>
+	<p class="alignright"><small>Comment by Peter Foti — September 26, 2006 <a href="#comment-8649">#</a> </small></p>
+	</li>
+
+
+
+
+
+	<li id="comment-8653" class="class_comment2">
+	<p>Breaking “for  in” loops is just one thing. Another is that you
+break the “in” operator in general. And the strongest argument for using
+ no extensions at all is the compatibilitys between different libraries.
+ It may be possible that someone has another implementation idea of an
+extension.</p>
+	<p class="alignright"><small>Comment by <a href="http://journal.webmagics.net/" rel="external nofollow" class="url">Sebastian Werner</a> — September 26, 2006 <a href="#comment-8653">#</a> </small></p>
+	</li>
+
+
+
+
+
+	<li id="comment-8675" class="class_comment1">
+	<p><b>@Peter:</b> Either will work.  The !== operator checks for strict
+ equivalence (matching types), while the != operator checks for lax
+equivalence.  “0 != false” returns false, but “0 !== false” returns
+true.</p>
+<p>Of course, since typeof will always return a string, the two operators are interchangeable in this context.</p>
+<p><b>@Douglas:</b> Well-written as always.  I echo the sentiment that defensive <code>for..in</code> iteration should become the norm. As you may know, Dean Edwards <a href="http://dean.edwards.name/weblog/2006/07/enum/" rel="nofollow">wrote about this</a> a while back, describing an excellent method for avoiding collisions with object prototypes.</p>
+	<p class="alignright"><small>Comment by <a href="http://andrewdupont.net/" rel="external nofollow" class="url">Andrew Dupont</a> — September 26, 2006 <a href="#comment-8675">#</a> </small></p>
+	</li>
+
+
+
+
+
+	<li id="comment-8682" class="class_comment2">
+	<p>Ehm, hello, am I missing something?</p>
+<p>if (!Object.prototype.hasOwnProperty){<br>
+   Object.prototype.hasOwnProperty = function(p){<br>
+      return typeof this[p] != ‘function’;<br>
+   }<br>
+}</p>
+<p>Object.prototype.each = function(fn){<br>
+   for (var p in this) {<br>
+      if (!this.hasOwnProperty(p)) fn(this[p]);<br>
+   }<br>
+}</p>
+<p>var foo = new Object;<br>
+var callback = function(a){ alert(a); }<br>
+foo.each(callback);</p>
+	<p class="alignright"><small>Comment by Michal Tatarynowicz — September 26, 2006 <a href="#comment-8682">#</a> </small></p>
+	</li>
+
+
+
+
+
+	<li id="comment-8685" class="class_comment1">
+	<p>[...] for in Intrigue » Yahoo! User Interface Blog (tags: javascript) [...]</p>
+	<p class="alignright"><small>Pingback by <a href="http://www.barelyfitz.com/blog/archives/2006/09/26/440/" rel="external nofollow" class="url">BarelyBlogging » Blog Archive » links for 2006-09-27</a> — September 26, 2006 <a href="#comment-8685">#</a> </small></p>
+	</li>
+
+
+
+
+
+	<li id="comment-8687" class="class_comment2">
+	<p>Maybe better:</p>
+<p><code><br>
+Object.prototype.hasOwnProperty = function (prop) {<br>
+return this[prop] !== this.prototype[prop];<br>
+}<br>
+</code></p>
+<p>Though I suppose this might mean that obj.hasOwnProperty(‘something_that_does_not_exist’) is true?</p>
+	<p class="alignright"><small>Comment by <a href="http://blog.ianbicking.org/" rel="external nofollow" class="url">Ian Bicking</a> — September 26, 2006 <a href="#comment-8687">#</a> </small></p>
+	</li>
+
+
+
+
+
+	<li id="comment-8698" class="class_comment1">
+	<p>I think this description sort of cheapens the power of the <code>hasOwnProperty()</code>
+ method. It’s job isn’t to determine if a key contains a function or
+not, it’s job is to determine if the key was added directly to this
+object instance or if it was added through the prototype chain. You may
+very well want to add a function under a key, in which case testing for a
+ function doesn’t help out very much.</p>
+	<p class="alignright"><small>Comment by <a href="http://www.nczonline.net/" rel="external nofollow" class="url">Nicholas C. Zakas</a> — September 26, 2006 <a href="#comment-8698">#</a> </small></p>
+	</li>
+
+
+
+
+
+	<li id="comment-8772" class="class_comment2">
+	<p>This may be a nit and totally not the point of the post, but I think there’s an easier regex for trimming:</p>
+<p><code><br>
+String.prototype.trim = function () {<br>
+    return this.replace(/^\s+|\s+$/g, '');<br>
+}<br>
+</code></p>
+	<p class="alignright"><small>Comment by Matthew Frank — September 27, 2006 <a href="#comment-8772">#</a> </small></p>
+	</li>
+
+
+
+
+
+	<li id="comment-8778" class="class_comment1">
+	<p>Your trim() example has lost all of its backslashes.</p>
+	<p class="alignright"><small>Comment by <a href="http://ecmanaut.blogspot.com/" rel="external nofollow" class="url">Johan Sunsdtröm</a> — September 27, 2006 <a href="#comment-8778">#</a> </small></p>
+	</li>
+
+
+
+
+
+	<li id="comment-8824" class="class_comment2">
+	<p>hi there,</p>
+<p> can you make YUI blog have a printer friendly link for nice offline reading ?</p>
+<p>thank you,</p>
+<p>BR,<br>
+~A</p>
+	<p class="alignright"><small>Comment by <a href="http://anjanb.wordpress.com/" rel="external nofollow" class="url">anjan bacchu</a> — September 27, 2006 <a href="#comment-8824">#</a> </small></p>
+	</li>
+
+
+
+
+
+	<li id="comment-8849" class="class_comment1">
+	<p>Douglas, why do you consider for…in’s behavior to be a flaw?  I know
+ I’ve come up on situations where I’m very interested in knowing all the
+ keys on an object, especially the inherited ones.</p>
+	<p class="alignright"><small>Comment by Jeff Stewart — September 28, 2006 <a href="#comment-8849">#</a> </small></p>
+	</li>
+
+
+
+
+
+	<li id="comment-8896" class="class_comment2">
+	<p>typeof is also flawed (besides the fact that I would prefer to use instanceof) since this is perfectly valid:</p>
+<p>Array.prototype.foo = ‘bar’;</p>
+<p>Personally I would prefer something like this:</p>
+<p>if (!Object.prototype.hasOwnProperty)<br>
+{<br>
+    Object.prototype.hasOwnProperty = function(p)<br>
+    {<br>
+        return this.constructor.prototype[p] === undefined;<br>
+    }<br>
+}</p>
+<p>And personally I don’t find the for-in behavior a flaw; I think there
+ are good reasons to enumerate inherited properties as well.</p>
+	<p class="alignright"><small>Comment by Tino Zijdel — September 28, 2006 <a href="#comment-8896">#</a> </small></p>
+	</li>
+
+
+
+
+
+	<li id="comment-8897" class="class_comment1">
+	<p>@anjan: Good suggestion, I’ll add it to our feature request list.</p>
+<p>Thanks,<br>
+Nate</p>
+	<p class="alignright"><small>Comment by <a href="http://nate.koechley.com/blog" rel="external nofollow" class="url">Nate Koechley</a> — September 28, 2006 <a href="#comment-8897">#</a> </small></p>
+	</li>
+
+
+
+
+
+	<li id="comment-9068" class="class_comment2">
+	<p>[...] for in Intrigue ? Yahoo! User Interface Blog Douglas Crockford
+ discusses using JavaScript and prototype properties…. also check out
+the comment re: !== and !=. Who knew? (categories: javascript prototype
+programming ) [...]</p>
+	<p class="alignright"><small>Pingback by <a href="http://cephas.net/blog/2006/10/01/links-9-30-2006/" rel="external nofollow" class="url">Aaron Johnson » Blog Archive » Links: 9-30-2006</a> — October 1, 2006 <a href="#comment-9068">#</a> </small></p>
+	</li>
+
+
+
+
+
+	<li id="comment-9398" class="class_comment1">
+	<p>Here is a fix I believe should fix the hasOwnProperty:</p>
+<p>/* Safari</p>
+	<p class="alignright"><small>Comment by <a href="http://www.authenteo.com/" rel="external nofollow" class="url">Kris Zyp</a> — October 5, 2006 <a href="#comment-9398">#</a> </small></p>
+	</li>
+
+
+
+
+
+	<li id="comment-9399" class="class_comment2">
+	<p>I prefer using “propertyIsEnumerable” for this.  It seems more
+appropriate than “hasOwnProperty” for the task of enumeration, and is
+more widely supported across browsers.</p>
+<p>Also, for folks considering augmenting built-in types, keep in mind
+that this pollutes the global namespace, and should be used with EXTREME
+ caution, if ever.</p>
+	<p class="alignright"><small>Comment by Matt Sweeney — October 5, 2006 <a href="#comment-9399">#</a> </small></p>
+	</li>
+
+
+
+
+
+	<li id="comment-9464" class="class_comment1">
+	<p>@Matthew – your RegExp works well, too. I think a lot of people
+adopted the prior one because your RegExp would actually fail in
+Netscape 4.x (I know, who uses that browser any more?). I know I used
+one similar to Crockford’s for a long time just out of habit.</p>
+	<p class="alignright"><small>Comment by <a href="http://www.nczonline.net/" rel="external nofollow" class="url">Nicholas C. Zakas</a> — October 6, 2006 <a href="#comment-9464">#</a> </small></p>
+	</li>
+
+
+
+
+
+	<li id="comment-9465" class="class_comment2">
+	<p>I have never seen the !! operator before – what does it do?</p>
+	<p class="alignright"><small>Comment by Bill — October 6, 2006 <a href="#comment-9465">#</a> </small></p>
+	</li>
+
+
+
+
+
+	<li id="comment-9471" class="class_comment1">
+	<p>!! converts a truthy value to true, and a value to false. It is similar to the Boolean() function.</p>
+	<p class="alignright"><small>Comment by <a href="http://360.yahoo.com/douglascrockford" rel="external nofollow" class="url">Douglas Crockford</a> — October 6, 2006 <a href="#comment-9471">#</a> </small></p>
+	</li>
+
+
+
+
+
+	<li id="comment-10129" class="class_comment2">
+	<p>JavaScript is not flawed with for-in loop just because this loops
+grabs all enumerable properties all along the inheritance chain: there
+can be situations where it is perfectly needed.<br>
+JavaScript is flawed because we cannot manage isPropertyEnumerable flag,
+ but only read it. That would be a years long dream of mine to be able
+to do something like:<br>
+obj.someProperty = someValue;<br>
+obj.someProperty.isEnumerable = false;</p>
+<p>Besides solving the for-in loop problem, it would be also a
+“cheap-chat” protected members emulation: not a bulletproof (as in any
+run-time compiled language) but very easy to use:<br>
+ obj.secretName = someFunction;<br>
+ obj.secretName.isEnumerable = false;</p>
+<p>Dreams, dreams…</p>
+	<p class="alignright"><small>Comment by VK — October 16, 2006 <a href="#comment-10129">#</a> </small></p>
+	</li>
+
+
+
+
+
+	<li id="comment-152577" class="class_comment1">
+	<p>It seems like like the biggest problem with augmenting <code>Object.prototype</code>
+ with new properties is that you pretty much never want include those
+properties when iterating over an object. So why not test against <code>Object.prototype</code> directly?:<br>
+<code><br>
+for (name in obj) {<br>
+    if (Object.prototype[name] === undefined) {<br>
+        ...<br>
+    }<br>
+}<br>
+</code></p>
+	<p class="alignright"><small>Comment by Brent Robientt — July 5, 2007 <a href="#comment-152577">#</a> </small></p>
+	</li>
+
+
+
+
+
+	<li id="comment-155910" class="class_comment2">
+	<p>There is are two remote yet possible bugs in doing exactly as the
+article recommends. The first happens when the particular object whose
+properties one is enumerating has a custom property ‘hasOwnProperty’,
+and the second happens when Object.prototype is assigned a custom
+‘hasOwnProperty’. There is a workaround for the first bug.</p>
+<p><code><br>
+for(var key in obj) {<br>
+    if(Object.prototype.hasOwnProperty.call(obj, key)) {<br>
+        ...<br>
+    }<br>
+}<br>
+</code></p>
+<p>or, more compactly,</p>
+<p><code><br>
+for(var key in obj) {<br>
+    if({ }.hasOwnProperty.call(obj, key)) {<br>
+        ...<br>
+    }<br>
+}<br>
+</code></p>
+<p>This would be familiar if you’ve seen code like</p>
+<p><code><br>
+var myargs = [ ].slice.call(arguments, 2);<br>
+myfunc.apply(myobj, myargs);<br>
+</code></p>
+	<p class="alignright"><small>Comment by Jay — July 11, 2007 <a href="#comment-155910">#</a> </small></p>
+	</li>
+
+
+
+
+
+	<li id="comment-156315" class="class_comment1">
+	<p>Hi Douglas !</p>
+<p>Very interesting list of articles here.</p>
+<p>But I found a bug in your last code snippet that makes the function return true for undefined variables !</p>
+<p><code>var words = {<br>
+    'foo' : 'foo',<br>
+    'bar' : 'bar'<br>
+}<br>
+function check_word(word) {<br>
+    return typeof words[word] !== 'function';<br>
+}<br>
+alert(check_word('foo')); // true<br>
+alert(check_word('foobar')); // true !!! it should be false</code></p>
+<p>So here is a quick correction :</p>
+<p><code>function check_word(word) {<br>
+    return typeof words[word] !== 'undefined' &amp;&amp;<br>
+           typeof words[word] !== 'function';<br>
+}<br>
+alert(check_word('foo')); // true<br>
+alert(check_word('foobar')); // false ! it's ok now</code></p>
+	<p class="alignright"><small>Comment by François B. — July 12, 2007 <a href="#comment-156315">#</a> </small></p>
+	</li>
+
+
+
+
+
+	<li id="comment-188494" class="class_comment2">
+	<p>Checking the object by using typeof can in no way be considered a replacement for <code>hasOwnProperty</code>. It is quite likely that a functional value exists in the iterated object’s instance (a method).</p>
+<p>Using “in” will check the prototype chain. </p>
+<p>This feature can be useful for examining the prototype chain. For
+example, if you wanted to generically advise each method in a Panel<br>
+class, you could iterate through all the functions in the object’s prototype chain.<br>
+If you think about it, it can be a useful feature.</p>
+<p>In fact, the “flaw” that Doug mentions is intentional behavior of the
+ language. As mentioned in earlier comments, it is a perfectly valid
+feature (read above).</p>
+<p>Sweeney mentioned using propertyIsEnumerable to check an object’s properties in lieu of missing hasOwnProperty. </p>
+<p>Interestingly, <code>propertyIsEnumerable</code> is specified such that coforming implementations will have the exact same result as with <code>hasOwnProperty</code>.</p>
+<p>Method <code>propertyIsEnumerable</code> does not check the prototype chain (15.2.4.7). Since all programmer-defined properties are enumerable. Therefore, <code>propertyIsEnumerable</code> provides the behavior that Doug so desires. </p>
+<p>The fact that <code>propertyIsEnumerable</code> does not check the
+prototype chain is itself a bug of the spec. David Flanagan pointed this
+ out and Brendan will readily admit that it’s a bug. JScript and
+SpiderMonkey both implement the spec correctly in this aspect.</p>
+<p>The fact that <code>propertyIsEnumerable</code> does not check the prototype chain is, in fact, a bug that</p>
+<p>Unfortunately, JScript suffers from another bug that causes <code>propertyIsEnumerable</code> to return false on a user-defined object property.</p>
+<p>This happens when the value that is passed to <code>propertyIsEnumerable</code> exists in the instance and overrides a non-enumerable (<code>DontEnum</code>) property in the object’s prototype chain (such as an overridden “toString”)</p>
+<p>Matthew Frank provides a tighter version of trim, and there’s nothing wrong with adding <code>trim</code>, however, it should be done conditionally:<br>
+<code>if(!String.prototype.trim)<br>
+    String.prototype.trim = function () {<br>
+        return this.replace(/^\s+|\s+$/g, '');<br>
+};</code></p>
+<p>The conditional check is necessary because future versions of ECMAScript will have <code>String.prototype.trim</code>.</p>
+<p>@Andrew Dupont the <code>!==</code> will produce the same result as <code>!=</code>
+ when both operands are string values (returns false if the sequence of
+characters is not an exact match,). I would probably opt for <code>!=</code> though.</p>
+	<p class="alignright"><small>Comment by <a href="http://dhtmlkitchen.com/" rel="external nofollow" class="url">Garrett</a> — September 9, 2007 <a href="#comment-188494">#</a> </small></p>
+	</li>
+
+
+
+
+
+	<li id="comment-189184" class="class_comment1">
+	<p>correction:<br>
+For programmer-defined objects, <code>propertyIsEnumerable</code> is specified such that coforming implementations will have the exact same result as with <code>hasOwnProperty</code>.</p>
+<p><code>var obj = {<br>
+   Garrett : "monkeybrains"<br>
+   ,borked : "javascript" // transitivity fixed :-)<br>
+   ,toString : function() { return "an enumerable prop"; }<br>
+   ,valueOf : function() { return 2; } // also enumerable.<br>
+};</code></p>
+<p>// can this be false for any value of s?<br>
+(obj.hasOwnProperty( s ) != obj.propertyIsEnumerable( s ))</p>
+	<p class="alignright"><small>Comment by <a href="http://dhtmlkitchen.com/" rel="external nofollow" class="url">Garrett</a> — September 11, 2007 <a href="#comment-189184">#</a> </small></p>
+	</li>
+
+
+
+
+
+	<li id="comment-224553" class="class_comment2">
+	<p>[...] More related info about hasOwnProperty. [...]</p>
+	<p class="alignright"><small>Pingback by <a href="http://blog.guya.net/2007/11/11/resolving-some-issues-with-swfobject/" rel="external nofollow" class="url">GUYA.NET » Blog Archive » Resolving some issues with swfobject</a> — November 11, 2007 <a href="#comment-224553">#</a> </small></p>
+	</li>
+
+
+
+
+
+	<li id="comment-339433" class="class_comment1">
+	<p>@Douglas: I know this article is 5 months old, but since it is being
+ linked by JSLint, you should really fix that last code sample so that
+it doesn’t return true for undefined keys.<br>
+<code><br>
+function check_word(word) {<br>
+    return typeof words[word] !== 'function'<br>
+        &amp;&amp; typeof words[word] !== 'undefined'<br>
+}<br>
+</code></p>
+	<p class="alignright"><small>Comment by henrah — April 4, 2008 <a href="#comment-339433">#</a> </small></p>
+	</li>
+
+
+
+
+
+	<li id="comment-394670" class="class_comment2">
+	<p>First an editorial, then some science.</p>
+<p>It’s just wrong to say that a js Object is not a prop/value hash,
+should not be used as such, and then go on to implement an alternate
+hash mechanism. Objects certainly are hashes (dictionaries, key/value
+pairs), but they don’t behave exactly like hashes in some other
+languages.  Yes, because of prototyping and inheritance a js hash can
+get additional members.  Using hasOwnProperty is a correct way to filter
+ these – that is, it’s a correct way to use an object hash in
+javascript.  Do you really want to write a custom hash object just to
+avoid the one-line property check?  Like so many libraries and toolkits
+out there, this smacks as an effort to turn javascript into a different
+language.  These efforts usually result in overhead, obfuscation and
+maintenance challenges.</p>
+<p>Ok, the science.  I wanted to know the overhead of adding a
+hasOwnProperty() check.  I also timed the alternate (inferior) “typeof
+obj[key] !== ‘function’” check.  Instead of over-burdening this comment
+with the full results, if you’re interested, the engine is at <a href="http://randomous.com/tools/misc/timer.php" title="Javascript Timer" rel="nofollow">http://randomous.com/tools/misc/timer.php</a>. The results of timing tests relevant to this article are at the bottom of that page.</p>
+<p>Cheers…</p>
+	<p class="alignright"><small>Comment by <a href="http://randomous.com/" rel="external nofollow" class="url">byron</a> — June 11, 2008 <a href="#comment-394670">#</a> </small></p>
+	</li>
+
+
+
+
+
+	<li id="comment-412392" class="class_comment1">
+	<p>Looks to me like additional shallow versions of the <i>in</i> operator and the <i>for in</i> loop statement (which do not follow the prototype chain) would be a useful extension of the language.</p>
+	<p class="alignright"><small>Comment by Stefan — July 4, 2008 <a href="#comment-412392">#</a> </small></p>
+	</li>
+
+
+
+
+
+	<li id="comment-488264" class="class_comment2">
+	<p>Is this too ugly?</p>
+<p><code><br>
+for_own(objects, function (o) {<br>
+  // ...<br>
+});<br>
+</code></p>
+<p>Where for_own would be something like:</p>
+<p><code><br>
+function for_own(obj, fun) {<br>
+    for (var key in obj) {<br>
+        if (obj.hasOwnProperty(key)) {<br>
+            fun(key);<br>
+        }<br>
+    }<br>
+};<br>
+</code></p>
+<p>Greets!</p>
+	<p class="alignright"><small>Comment by <a href="http://emmanueloga.wordpress.com/" rel="external nofollow" class="url">Emmanuel Oga</a> — October 6, 2008 <a href="#comment-488264">#</a> </small></p>
+	</li>
+
+
+
+
+
+	<li id="comment-489486" class="class_comment1">
+	<p>for those who are interested, i’m using the following to allow for
+more php-style trim() (where specific characters/strings can be trimmed
+from the string):<br>
+<code></code></p><code>
+</code><p><code>if (!String.prototype.trim) {<br>
+	String.prototype.trim = function (chars) {<br>
+		var that = this.toString();<br>
+		chars = chars || '\\s';<br>
+		if (Array.isArray(chars)) {<br>
+			chars = chars.join('|');<br>
+		}<br>
+		var re = new RegExp('^(' + chars + ')+|(' + chars + ')+$','g');<br>
+		return that.replace(re,'');<br>
+	}<br>
+}<br>
+</code></p>
+	<p class="alignright"><small>Comment by Stephen — October 7, 2008 <a href="#comment-489486">#</a> </small></p>
+	</li>
+
+
+
+
+
+	<li id="comment-585339" class="class_comment2">
+	<p>When processing for (p in o) loops, is there anything wrong with the continue statement?  I prefer to do the following:<br>
+<code><br>
+for (p in o) {<br>
+   if (!o.hasOwnProperty(p)) {<br>
+      continue;<br>
+   };<br>
+   // more code<br>
+}<br>
+</code><br>
+I find that this helps to reduce nesting and makes for more readable code.</p>
+	<p class="alignright"><small>Comment by Paul Dunbar — October 14, 2009 <a href="#comment-585339">#</a> </small></p>
+	</li>
+
+
+
+
+
+	<li id="comment-588456" class="class_comment1">
+	<p>@Paul</p>
+<p>That’s the style I’d use, ever since I learned it from Wil Shipley’s
+blog (Delicious Monster) for reducing nesting and improving readability,
+ as you said. Essentially, set up conditionals to bail out immediately
+if the there’s nothing to do because of the circumstances not being met.
+ Great suggestion, IMHO.</p>
+	<p class="alignright"><small>Comment by Thom — February 22, 2010 <a href="#comment-588456">#</a> </small></p>
+	</li>
+
+
+
+
+</ol>
+</div>
+</div></body></html>
